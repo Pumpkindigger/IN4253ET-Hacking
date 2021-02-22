@@ -1,5 +1,8 @@
 import asyncio
 import telnetlib3
+import logging
+import time
+import os
 
 # Telnet RFC https://tools.ietf.org/html/rfc854
 # Telnet Options https://www.iana.org/assignments/telnet-options/telnet-options.xhtml
@@ -18,6 +21,8 @@ async def shell(reader: telnetlib3.TelnetReader, writer: telnetlib3.TelnetWriter
 
     # Check user/pass
     inp = await reader.readline()
+    logging.info(inp)
+
     if inp:
         # Echo input
         writer.echo(inp + '\r\n')
@@ -28,12 +33,17 @@ async def shell(reader: telnetlib3.TelnetReader, writer: telnetlib3.TelnetWriter
     while True:
         # This is placeholder for now
         inp = await reader.readline()
+        logging.info(inp)
         if "close" not in inp:
             writer.echo(inp + '\r\n')
         else:
             # Closes the connection
             writer.close()
 
+
+if not os.path.exists('logs'):
+    os.mkdir("logs")
+logging.basicConfig(filename='./logs/' + str(int(time.time())) + '.log', level=logging.DEBUG)\
 
 loop = asyncio.get_event_loop()
 coro = telnetlib3.create_server(port=6023, shell=shell)
