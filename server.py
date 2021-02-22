@@ -1,4 +1,6 @@
-import asyncio, telnetlib3
+import asyncio
+import telnetlib3
+
 
 @asyncio.coroutine
 def shell(reader, writer):

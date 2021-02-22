@@ -1,4 +1,6 @@
-import asyncio, telnetlib3
+import asyncio
+import telnetlib3
+
 
 @asyncio.coroutine
 def shell(reader, writer):
@@ -17,6 +19,7 @@ def shell(reader, writer):
 
     # EOF
     print()
+
 
 loop = asyncio.get_event_loop()
 coro = telnetlib3.open_connection('localhost', 6023, shell=shell)
