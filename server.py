@@ -1,6 +1,8 @@
 import asyncio
 import telnetlib3
 
+# Telnet RFC https://tools.ietf.org/html/rfc854
+# Telnet Options https://www.iana.org/assignments/telnet-options/telnet-options.xhtml
 
 
 async def shell(reader: telnetlib3.TelnetReader, writer: telnetlib3.TelnetWriter):
