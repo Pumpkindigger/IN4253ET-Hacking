@@ -5,7 +5,8 @@ import telnetlib3
 
 async def shell(reader: telnetlib3.TelnetReader, writer: telnetlib3.TelnetWriter):
     # Telnet options
-    # TODO no clue yet
+    linemode = writer.linemode
+    received_options = writer.remote_option
 
     # Welcome message
     writer.write("BCM96318 Broadband Router\r\n")
