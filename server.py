@@ -2,32 +2,31 @@ import asyncio
 import telnetlib3
 
 
-@asyncio.coroutine
-def shell(reader, writer):
+
+async def shell(reader: telnetlib3.TelnetReader, writer: telnetlib3.TelnetWriter):
     # Telnet options
     # TODO no clue yet
 
     # Welcome message
-    writer.write("BCM96318 Broadband Router")
+    writer.write("BCM96318 Broadband Router\r\n")
 
     # Login prompt
-    writer.write("\r\nLogin:")
+    writer.write("Login: \r\n")
 
     # Check user/pass
-    inp = yield from reader.read(1024)
+    inp = await reader.readline()
     if inp:
         # Echo input
-        writer.echo(inp)
-        # For now we always say acess granted
-        writer.write('\r\nAccess granted')
-        yield from writer.drain()
+        writer.echo(inp + '\r\n')
+        # For now we always say access granted
+        writer.write('Access granted\r\n')
 
     # Process commands
     while True:
         # This is placeholder for now
-        inp = yield from reader.read(1024)
-        if inp != "close":
-            writer.echo(inp)
+        inp = await reader.readline()
+        if "close" not in inp:
+            writer.echo(inp + '\r\n')
         else:
             # Closes the connection
             writer.close()
