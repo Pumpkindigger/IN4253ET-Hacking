@@ -25,3 +25,7 @@ python3 -m pip install -r requirements.txt
 ## Usage
 `server.py` is our IoT Honeypot  
 `client.pt` is used to test and create telnet connections
+
+### Shodan
+Username: 2GgLivbNtbRqE5Sr\
+Password: TLuekis2Qx9UVWEp
