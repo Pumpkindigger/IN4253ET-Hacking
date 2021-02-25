@@ -3,9 +3,9 @@ import DatabaseConnection
 # Test class for DatabaseConnection
 
 example_json = {
-  "options": [],
-  "welcome": "Broadband Router",
-  "login": "Login:",
+  "Options": [],
+  "Welcome": "BCM96318 Broadband Router",
+  "Login": "Login",
   "Authentication": "Always",
   "Command Interaction": {
     "command1": "response1",
@@ -15,8 +15,9 @@ example_json = {
 }
 
 # Add example to DB
-DatabaseConnection.add_profile(example_json)
+# DatabaseConnection.add_profile(example_json)
 
 # Update command
-y = DatabaseConnection.find_profile({"welcome":"Broadband Router"})
+# DatabaseConnection.delete_profile({"welcome":"BCM96318 Broadband Router"})
+y = DatabaseConnection.find_profiles_on_device("BCM96318 Broadband Router")
 print(y)

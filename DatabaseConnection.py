@@ -1,26 +1,44 @@
 import pymongo as pymongo
+from bson import ObjectId
 
 client = pymongo.MongoClient(
     "mongodb+srv://Hacking-Lab:IN4253ET@cluster0.yc2nt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
-mydb = client["myFirstDatabase"]
-mycol = mydb["profiles"]
 
 
-def add_profile(json):
-    mycol.insert_one(json)
+# mydb = client["myFirstDatabase"]
+# mycol = mydb["profiles"]
 
 
-def delete_profile(json):
-    mycol.delete_one(json)
+class DatabaseConnection:
 
+    def __init__(self, database, collection):
+        self.mydb = client[database]
+        self.mycol = self.mydb[collection]
 
-def update_profile(json, newval):
-    mycol.update_one(json, newval)
+    def add_profile(self, json):
+        json["_id"] = str(ObjectId())
+        self.mycol.insert_one(json)
 
+    def delete_profile(self, json):
+        self.mycol.delete_one(json)
 
-def query_profile(json):
-    return mycol.find(json)
+    def update_profile(self, json, newval):
+        self.mycol.update_one(json, newval)
 
+    def query_profile(self, json):
+        return self.mycol.find(json)
 
-def find_profile(json):
-    return mycol.find_one(json)
+    def find_profile(self, json):
+        return self.mycol.find_one(json)
+
+    def find_profile_on_id(self, id):
+        return self.mycol.find_one(id)
+
+    def find_profiles_on_device(self, device):
+        '''
+        Given the welcome message in which the device is specified, return a list of profiles
+        '''
+        profiles = []
+        for profile in self.mycol.find({"welcome": device}):
+            profiles.append(profile)
+        return profiles
