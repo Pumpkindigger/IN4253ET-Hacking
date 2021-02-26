@@ -39,6 +39,6 @@ class DatabaseConnection:
         Given the welcome message in which the device is specified, return a list of profiles
         '''
         profiles = []
-        for profile in self.mycol.find({"welcome": device}):
+        for profile in self.mycol.find({"Welcome": device}):
             profiles.append(profile)
         return profiles
