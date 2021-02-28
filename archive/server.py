@@ -41,8 +41,8 @@ async def shell(reader: telnetlib3.TelnetReader, writer: telnetlib3.TelnetWriter
             writer.close()
 
 
-if not os.path.exists('logs'):
-    os.mkdir("logs")
+if not os.path.exists('../logs'):
+    os.mkdir("../logs")
 logging.basicConfig(filename='./logs/' + str(int(time.time())) + '.log', level=logging.DEBUG)\
 
 loop = asyncio.get_event_loop()
