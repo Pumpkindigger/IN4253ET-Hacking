@@ -4,3 +4,4 @@ env/
 logs/
 venv/
 __pychache__/
+*.pyc
