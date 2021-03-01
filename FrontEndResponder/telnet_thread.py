@@ -1,7 +1,7 @@
 import threading  # https://docs.python.org/3/library/threading.html
 import socket  # https://docs.python.org/3/library/socket.html
 import select  # https://docs.python.org/3/library/select.html
-
+import byte_parser
 # Options: https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.2.0/com.ibm.zos.v2r2.hald001/telcmds.htm
 # Options: https://www.iana.org/assignments/telnet-options/telnet-options.xhtml
 # RFC: https://tools.ietf.org/html/rfc854
@@ -28,5 +28,9 @@ class TelnetThread(threading.Thread):
             if ready[0]:
                 buffer = self.conn.recv(4096)
                 self.history += buffer
+                print(buffer)
+                byte_parser.ByteParser.parse_string(self,buffer)
                 print(self.history)
         self.conn.close()
+
+
