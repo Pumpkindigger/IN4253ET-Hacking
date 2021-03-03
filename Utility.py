@@ -1,12 +1,11 @@
-from DatabaseConnection import DatabaseConnection
-from ProfileLogic import ProfileLogic
+from Profiles.DatabaseConnection import DatabaseConnection
+from Profiles.ProfileLogic import ProfileLogic
 
 # Test class for DatabaseConnection
 
 example_json = {
   "Options": [],
   "Welcome": "BCM96318 Broadband Router",
-  "Login": "Login",
   "Authentication": "Always",
   "Command Interaction": {
     "command1": "response1",
@@ -27,7 +26,6 @@ print(y)
 profile_1 = {
   "Options": ["DO(echo)", "DO(rflow)", "WILL(echo)", "WILL(sga)"],
   "Welcome": "BCM96318 Broadband Router",
-  "Login": "Telnet is Disabled in WAN Side",
   "Authentication": "Always",
   "Command Interaction": {
     "command1": "response1",
@@ -37,4 +35,4 @@ profile_1 = {
 }
 
 pl = ProfileLogic(dbcon)
-pl.insert_profile(profile_1["Options"], profile_1["Welcome"], profile_1["Login"], profile_1["Authentication"])
+pl.insert_profile(profile_1["Options"], profile_1["Welcome"], profile_1["Authentication"])

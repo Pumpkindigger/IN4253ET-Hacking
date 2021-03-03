@@ -34,9 +34,9 @@ class DatabaseConnection:
     def find_profile_on_id(self, id):
         return self.mycol.find_one(id)
 
-    def find_profiles_on_device(self, device):
+    def find_profiles_on_message(self, device):
         '''
-        Given the welcome message in which the device is specified, return a list of profiles
+        Given the welcome message, return a list of profiles
         '''
         profiles = []
         for profile in self.mycol.find({"Welcome": device}):

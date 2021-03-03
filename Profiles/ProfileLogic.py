@@ -1,12 +1,9 @@
-import DatabaseConnection
-
 '''
     Insert, update and get profiles to/from database
     An example profile:
     {
         "Options": []],
-        "Welcome": "BCM96318 Broadband Router",
-        "Login": "Login",
+        "Welcome": "BCM96318 Broadband Router\n please login",
         "Authentication": "Always",
         "Command Interaction": {
           "command1": "response1",
@@ -20,16 +17,15 @@ class ProfileLogic:
     def __init__(self, dbcon):
         self.dbcon = dbcon
 
-    def insert_profile(self, options, welcome, login, authentication):
+    def insert_profile(self, options, welcome, authentication):
         '''
         Insert a new profile if there is no profile with these options, welcom message, login message and authentication mode
         The new profile will have an empty command interaction field
         '''
-        if self.get_profile(options, welcome, login, authentication) is None:
+        if self.get_profile(options, welcome, authentication) is None:
             profile = {
                 "Options": options,
                 "Welcome": welcome,
-                "Login": login,
                 "Authentication": authentication,
                 "Command Interaction": {}
             }
@@ -45,13 +41,16 @@ class ProfileLogic:
         new_value = {"$set": {"Command Interaction": commands}}
         self.dbcon.update_profile(query, new_value)
 
-    def get_profile(self, options, welcome, login, authentication):
+    def get_profile(self, options, welcome, authentication):
         '''
         Retrieve the id of a profile from the database given the options, welcome message, login message and authentication mode
         '''
-        profile = self.dbcon.find_profile({'$and': [{"Options": options}, {"Welcome": welcome}, {"Login": login},
+        profile = self.dbcon.find_profile({'$and': [{"Options": options}, {"Welcome": welcome},
                                                     {"Authentication": authentication}]})
         if profile is None:
             return None
         else:
             return profile["_id"]
+
+    def get_random_profile(self):
+        return self.dbcon.get_random_profile()
