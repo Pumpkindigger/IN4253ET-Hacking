@@ -21,7 +21,7 @@ example_json = {
 # Update command
 # DatabaseConnection.delete_profile({"Welcome":"BCM96318 Broadband Router"})
 dbcon = DatabaseConnection("myFirstDatabase","profiles")
-y = dbcon.find_profiles_on_device("BCM96318 Broadband Router")
+y = dbcon.get_random_profile()
 print(y)
 
 profile_1 = {

@@ -42,3 +42,6 @@ class DatabaseConnection:
         for profile in self.mycol.find({"Welcome": device}):
             profiles.append(profile)
         return profiles
+
+    def get_random_profile(self):
+        return self.mycol.aggregate([{"$sample": {"size":1}}]).next()
