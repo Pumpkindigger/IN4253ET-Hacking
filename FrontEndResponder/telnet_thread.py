@@ -17,15 +17,15 @@ class TelnetThread(threading.Thread):
         if it should close, and what data has been received so far."""
         threading.Thread.__init__(self)
         self.conn = client
+        self.client_ip = client.getpeername()[0]
         self.alive = True  # Ensures we can close the thread in a friendly way.
         self.history = bytearray()
 
     def run(self):
         """When the thread is started it will output some logging information and start the telnet_thread."""
-        client_ip = self.conn.getpeername()[0]
-        logging.info(f"Incoming connection received from: {client_ip}.")
+        logging.info(f"Incoming connection received from: {self.client_ip}.")
         self.telnet_thread()
-        logging.info(f"Connection closed from: {client_ip}")
+        logging.info(f"Connection closed from: {self.client_ip}")
 
     def telnet_thread(self):
         """Handling of incoming/outgoing bytes."""
