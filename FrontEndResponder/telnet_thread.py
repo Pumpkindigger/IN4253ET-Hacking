@@ -17,15 +17,15 @@ class TelnetThread(threading.Thread):
         if it should close, and what data has been received so far."""
         threading.Thread.__init__(self)
         self.conn = client
+        self.client_ip = client.getpeername()[0]
         self.alive = True  # Ensures we can close the thread in a friendly way.
         self.history = bytearray()
 
     def run(self):
         """When the thread is started it will output some logging information and start the telnet_thread."""
-        client_ip = self.conn.getpeername()[0]
-        logging.info(f"Incoming connection received from: {client_ip}.")
+        logging.info(f"Incoming connection received from: {self.client_ip}.")
         self.telnet_thread()
-        logging.info(f"Connection closed from: {client_ip}")
+        logging.info(f"Connection closed from: {self.client_ip}")
 
     def telnet_thread(self):
         """Handling of incoming/outgoing bytes."""
@@ -33,10 +33,29 @@ class TelnetThread(threading.Thread):
             ready = select.select([self.conn], [], [], 5)
             if ready[0]:
                 buffer = self.conn.recv(4096)
+
+                # Closes socket if the client suddenly disappeared.
+                if not len(buffer):
+                    logging.warning(f"Connection unexpectedly broken from: {self.client_ip}")
+                    self.alive = False
+                    continue
+
                 self.history += buffer
                 print(buffer)
                 byte_parser.ByteParser.parse_string(self, buffer)
                 print(self.history)
         self.conn.close()
 
-
+    def send_to_client(self, data: bytes):
+        """Sends data to the client via socket."""
+        total_bytes = len(data)
+        total_sent = 0
+        try:
+            while total_sent < total_bytes:
+                bytes_send = self.conn.send(data[total_sent:])
+                if not bytes_send:
+                    raise BrokenPipeError("Socket connection broken.")
+                total_sent += bytes_send
+        except BrokenPipeError:
+            logging.warning(f"Connection unexpectedly broken from: {self.client_ip}")
+            self.alive = False
