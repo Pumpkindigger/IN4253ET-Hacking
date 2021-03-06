@@ -33,6 +33,13 @@ class TelnetThread(threading.Thread):
             ready = select.select([self.conn], [], [], 5)
             if ready[0]:
                 buffer = self.conn.recv(4096)
+
+                # Closes socket if the client suddenly disappeared.
+                if not len(buffer):
+                    logging.warning(f"Connection unexpectedly broken from: {self.client_ip}")
+                    self.alive = False
+                    continue
+
                 self.history += buffer
                 print(buffer)
                 byte_parser.ByteParser.parse_string(self, buffer)
