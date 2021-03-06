@@ -39,4 +39,16 @@ class TelnetThread(threading.Thread):
                 print(self.history)
         self.conn.close()
 
-
+    def send_to_client(self, data: bytes):
+        """Sends data to the client via socket."""
+        total_bytes = len(data)
+        total_sent = 0
+        try:
+            while total_sent < total_bytes:
+                bytes_send = self.conn.send(data[total_sent:])
+                if not bytes_send:
+                    raise BrokenPipeError("Socket connection broken.")
+                total_sent += bytes_send
+        except BrokenPipeError:
+            logging.warning(f"Connection unexpectedly broken from: {self.client_ip}")
+            self.alive = False
