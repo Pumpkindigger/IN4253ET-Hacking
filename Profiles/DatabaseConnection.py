@@ -1,18 +1,17 @@
 import pymongo as pymongo
 from bson import ObjectId
 
-client = pymongo.MongoClient(
-    "mongodb+srv://Hacking-Lab:IN4253ET@cluster0.yc2nt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
-
 
 # mydb = client["myFirstDatabase"]
 # mycol = mydb["profiles"]
 
 
 class DatabaseConnection:
+    client = pymongo.MongoClient(
+        "mongodb+srv://Hacking-Lab:IN4253ET@cluster0.yc2nt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
 
     def __init__(self, database, collection):
-        self.mydb = client[database]
+        self.mydb = self.client[database]
         self.mycol = self.mydb[collection]
 
     def add_profile(self, json):
