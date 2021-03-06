@@ -2,7 +2,9 @@ import threading  # https://docs.python.org/3/library/threading.html
 import socket  # https://docs.python.org/3/library/socket.html
 import select  # https://docs.python.org/3/library/select.html
 import logging
+
 import byte_parser
+from Profiles.ProfileLogic import ProfileLogic
 
 # Options: https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.2.0/com.ibm.zos.v2r2.hald001/telcmds.htm
 # Options: https://www.iana.org/assignments/telnet-options/telnet-options.xhtml
@@ -12,20 +14,29 @@ import byte_parser
 class TelnetThread(threading.Thread):
     """Defines a Thread that includes variables and functions needed for Telnet Functionality."""
 
-    def __init__(self, client: socket):
+    def __init__(self, client: socket, database: ProfileLogic):
         """Extend the Thread class with variables to keep track of the client/socket connection
         if it should close, and what data has been received so far."""
         threading.Thread.__init__(self)
         self.conn = client
+        self.database = database
         self.client_ip = client.getpeername()[0]
         self.alive = True  # Ensures we can close the thread in a friendly way.
         self.history = bytearray()
+        self.profile = {}
+        self.welcome_send = False
 
     def run(self):
         """When the thread is started it will output some logging information and start the telnet_thread."""
         logging.info(f"Incoming connection received from: {self.client_ip}.")
+        self.set_random_profile()
         self.telnet_thread()
         logging.info(f"Connection closed from: {self.client_ip}")
+
+    def set_random_profile(self):
+        self.profile = self.database.get_random_profile()
+        profile_id = self.profile.get("_id")
+        logging.info(f"Requesting random profile from database. Got: {profile_id}")
 
     def telnet_thread(self):
         """Handling of incoming/outgoing bytes."""
@@ -44,6 +55,10 @@ class TelnetThread(threading.Thread):
                 print(buffer)
                 byte_parser.ByteParser.parse_string(self, buffer)
                 print(self.history)
+
+            if not self.welcome_send:
+                self.send_to_client(str.encode(self.profile.get('welcome')))
+                self.welcome_send = True
         self.conn.close()
 
     def send_to_client(self, data: bytes):

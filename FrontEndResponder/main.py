@@ -48,7 +48,7 @@ def handle_incoming_connections(listener):
     try:
         while True:
             client, address = listener.accept()
-            TelnetThread(client).start()
+            TelnetThread(client, database).start()
     except KeyboardInterrupt:
         logging.info("Closing FrontEndResponder...")
         listener.shutdown(1)
