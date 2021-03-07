@@ -42,7 +42,7 @@ class TelnetThread(threading.Thread):
 
                 self.history += buffer
                 print(buffer)
-                byte_parser.parse_string(buffer)
+                byte_parser.parse_string(buffer, self.client_ip)
                 print(self.history)
         self.conn.close()
 

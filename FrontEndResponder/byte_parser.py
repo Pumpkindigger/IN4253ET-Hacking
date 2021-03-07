@@ -56,7 +56,7 @@ telnet_commands = {
     240: "SE",
     241: "NOP",
     242: "Data Mark",
-    243: "Break	",
+    243: "BREAK",
     244: "Interrupt Process",
     245: "Abort output",
     246: "Are You There",
@@ -64,24 +64,24 @@ telnet_commands = {
     248: "Erase Line",
     249: "Go ahead",
     250: "SB",
-    251: "will",
-    252: "wont",
-    253: "do",
-    254: "dont",
+    251: "WILL",
+    252: "WONT",
+    253: "DO",
+    254: "DONT",
 }
 
 
-def parse_string(buffer):
+def parse_string(buffer, IP):
     i = 0
     while i < len(buffer):
         if buffer[i] == 255:
             i += 1
             if is_command_code(buffer[i]):
-                print(telnet_commands[buffer[i]])
                 i += 1
                 if is_command_option_code(buffer[i]):
-                    print(telnet_command_options[buffer[i]])
-
+                    log_message_option(IP, telnet_commands[buffer[i - 1]], telnet_command_options[buffer[i]])
+                else:
+                    log_command(IP, telnet_commands[buffer[i - 1]])
         else:
             i += 1
 
@@ -98,3 +98,11 @@ def is_command_option_code(code):
         return True
     else:
         return False
+
+
+def log_message_option(IP, command, option):
+    logging.info(f"FROM {IP} IAC {command} : {option}")
+
+
+def log_command(IP, command):
+    logging.info(f"FROM {IP} IAC {command}")
