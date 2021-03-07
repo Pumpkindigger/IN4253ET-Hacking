@@ -1,3 +1,5 @@
+import logging
+
 telnet_command_options = {
     0: "Binary Transmission",
     1: "Echo",
@@ -69,32 +71,30 @@ telnet_commands = {
 }
 
 
-class ByteParser():
-    """Parses the input"""
-
-    def parse_string(self, buffer):
-        i = 0;
-        while i < len(buffer):
-            if buffer[i] == 255:
+def parse_string(buffer):
+    i = 0
+    while i < len(buffer):
+        if buffer[i] == 255:
+            i += 1
+            if is_command_code(buffer[i]):
+                print(telnet_commands[buffer[i]])
                 i += 1
-                if (ByteParser.is_command_code(self, buffer[i])):
-                    print(telnet_commands[buffer[i]])
-                    i += 1
-                    if (ByteParser.is_command_option_code(self, buffer[i])):
-                        print(telnet_command_options[buffer[i]])
-            else:
-                i += 1
+                if is_command_option_code(buffer[i]):
+                    print(telnet_command_options[buffer[i]])
 
-    def is_command_code(self, code):
-        if (code < 255 and code > 240):
-            return True
         else:
-            return False
-
-    def is_command_option_code(self, code):
-        if (code <= 49):
-            return True
-        else:
-            return False
+            i += 1
 
 
+def is_command_code(code):
+    if (code < 255 and code > 240):
+        return True
+    else:
+        return False
+
+
+def is_command_option_code(code):
+    if (code <= 49):
+        return True
+    else:
+        return False
