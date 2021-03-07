@@ -73,6 +73,7 @@ telnet_commands = {
 
 def parse_string(buffer, IP):
     i = 0
+    commands = []
     while i < len(buffer):
         if buffer[i] == 255:
             i += 1
@@ -80,10 +81,13 @@ def parse_string(buffer, IP):
                 i += 1
                 if is_command_option_code(buffer[i]):
                     log_message_option(IP, telnet_commands[buffer[i - 1]], telnet_command_options[buffer[i]])
+                    commands.append([buffer[i - 1], buffer[i]])
                 else:
                     log_command(IP, telnet_commands[buffer[i - 1]])
+                    commands.append([buffer[i - 1]])
         else:
             i += 1
+    return commands
 
 
 def is_command_code(code):
