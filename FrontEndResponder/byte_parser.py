@@ -1,4 +1,5 @@
 import logging
+import sys
 
 telnet_command_options = {
     0: "Binary Transmission",
@@ -75,33 +76,63 @@ def parse_string(buffer, IP):
     i = 0
     commands = []
     while i < len(buffer):
+        if index_out_of_bounds(i, buffer):
+            break
         if buffer[i] == 255:
             i += 1
+            if index_out_of_bounds(i, buffer):
+                break
             if is_command_code(buffer[i]):
                 i += 1
+                if index_out_of_bounds(i, buffer):
+                    break
                 if is_command_option_code(buffer[i]):
                     log_message_option(IP, telnet_commands[buffer[i - 1]], telnet_command_options[buffer[i]])
                     commands.append([buffer[i - 1], buffer[i]])
+                elif buffer[i] != 255:
+                    log_correct_command_wrong_option(IP, telnet_commands[buffer[i - 1]], buffer[i])
                 else:
                     log_command(IP, telnet_commands[buffer[i - 1]])
                     commands.append([buffer[i - 1]])
+            else:
+                log_iac_wrong_command(IP, buffer[i])
         else:
+            log_no_iac(IP, buffer[i])
             i += 1
     return commands
 
 
+def index_out_of_bounds(i, buffer):
+    if len(buffer) < i:
+        return True
+    else:
+        return False
+
+
 def is_command_code(code):
-    if (code < 255 and code > 240):
+    if 255 > code > 240:
         return True
     else:
         return False
 
 
 def is_command_option_code(code):
-    if (code <= 49):
+    if code <= 49:
         return True
     else:
         return False
+
+
+def log_correct_command_wrong_option(IP, command, option):
+    logging.info(f"FROM {IP} IAC {command} WRONG OPTION: {option}")
+
+
+def log_iac_wrong_command(IP, command):
+    logging.info(f"FROM {IP} IAC WRONG COMMAND {command}")
+
+
+def log_no_iac(IP, command):
+    logging.info(f"FROM {IP} NO IAC, BUT {command}")
 
 
 def log_message_option(IP, command, option):
