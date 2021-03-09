@@ -74,6 +74,7 @@ telnet_commands = {
 
 def parse_string(buffer, IP):
     i = 0
+    commands = []
     while i < len(buffer):
         if index_out_of_bounds(i, buffer):
             break
@@ -87,16 +88,18 @@ def parse_string(buffer, IP):
                     break
                 if is_command_option_code(buffer[i]):
                     log_message_option(IP, telnet_commands[buffer[i - 1]], telnet_command_options[buffer[i]])
+                    commands.append([buffer[i - 1], buffer[i]])
                 elif buffer[i] != 255:
                     log_correct_command_wrong_option(IP, telnet_commands[buffer[i - 1]], buffer[i])
                 else:
                     log_command(IP, telnet_commands[buffer[i - 1]])
+                    commands.append([buffer[i - 1]])
             else:
                 log_iac_wrong_command(IP, buffer[i])
-
         else:
             log_no_iac(IP, buffer[i])
             i += 1
+    return commands
 
 
 def index_out_of_bounds(i, buffer):

@@ -4,6 +4,7 @@ import select  # https://docs.python.org/3/library/select.html
 import logging
 import byte_parser
 
+
 # Options: https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.2.0/com.ibm.zos.v2r2.hald001/telcmds.htm
 # Options: https://www.iana.org/assignments/telnet-options/telnet-options.xhtml
 # RFC: https://tools.ietf.org/html/rfc854
@@ -41,9 +42,11 @@ class TelnetThread(threading.Thread):
                     continue
 
                 self.history += buffer
-                print(buffer)
-                byte_parser.parse_string(buffer, self.client_ip)
-                print(self.history)
+                # print(buffer)
+                commands = byte_parser.parse_string(buffer, self.client_ip)
+                self.process_commands(commands)
+                # print(commands)
+                # print(self.history)
         self.conn.close()
 
     def send_to_client(self, data: bytes):
@@ -59,3 +62,13 @@ class TelnetThread(threading.Thread):
         except BrokenPipeError:
             logging.warning(f"Connection unexpectedly broken from: {self.client_ip}")
             self.alive = False
+
+    def terminate_thread(self):
+        logging.info(f"{self.client_ip} terminated connection")
+        self.alive = False
+
+    def process_commands(self, commands):
+        for x in commands:
+            for y in x:
+                if y == 244:
+                    self.terminate_thread()
