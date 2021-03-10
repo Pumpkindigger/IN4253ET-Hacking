@@ -1,5 +1,4 @@
 import logging
-import sys
 
 telnet_command_options = {
     0: "Binary Transmission",
@@ -39,17 +38,17 @@ telnet_command_options = {
     35: "X Display Location",
     36: "Environment Option",
     37: "Authentication Option",
-    38: "Encryption Option	",
+    38: "Encryption Option",
     39: "New Environment Option",
-    40: "TN3270E	",
-    41: "XAUTH	",
+    40: "TN3270E",
+    41: "XAUTH",
     42: "CHARSET",
-    43: "Telnet Remote Serial Port (RSP)	",
-    44: "Com Port Control Option	",
-    45: "Telnet Suppress Local Echo	",
-    46: "Telnet Start TLS	",
-    47: "KERMIT	",
-    48: "SEND-URL	",
+    43: "Telnet Remote Serial Port (RSP)",
+    44: "Com Port Control Option",
+    45: "Telnet Suppress Local Echo",
+    46: "Telnet Start TLS",
+    47: "KERMIT",
+    48: "SEND-URL",
     49: "FORWARD_X",
 }
 
@@ -59,9 +58,9 @@ telnet_commands = {
     242: "Data Mark",
     243: "BREAK",
     244: "Interrupt Process",
-    245: "Abort output",
+    245: "Abort Output",
     246: "Are You There",
-    247: "Erase character",
+    247: "Erase Character",
     248: "Erase Line",
     249: "Go ahead",
     250: "SB",
@@ -72,72 +71,37 @@ telnet_commands = {
 }
 
 
-def parse_string(buffer, IP):
+def parse_buffer(buffer, ip):
     i = 0
     commands = []
+    text = ""
+
     while i < len(buffer):
-        if index_out_of_bounds(i, buffer):
-            break
-        if buffer[i] == 255:
+        byte_iac = buffer[i]
+        if byte_iac == 255:  # Found an IAC!
             i += 1
-            if index_out_of_bounds(i, buffer):
-                break
-            if is_command_code(buffer[i]):
-                i += 1
-                if index_out_of_bounds(i, buffer):
-                    break
-                if is_command_option_code(buffer[i]):
-                    log_message_option(IP, telnet_commands[buffer[i - 1]], telnet_command_options[buffer[i]])
-                    commands.append([buffer[i - 1], buffer[i]])
-                elif buffer[i] != 255:
-                    log_correct_command_wrong_option(IP, telnet_commands[buffer[i - 1]], buffer[i])
+            if i >= len(buffer):
+                logging.warning(f"FROM {ip} INCOMPLETE IAC.")
+
+            byte_command = buffer[i]
+            if byte_command in telnet_commands:  # Found a known command!
+                if 250 < byte_command:  # Found a telnet option command!
+                    i += 1
+                    if i >= len(buffer):
+                        logging.warning(f"FROM {ip} INCOMPLETE IAC OPTION.")
+
+                    byte_option = buffer[i]
+                    if byte_option in telnet_command_options:  # Found a known option!
+                        logging.info(f"FROM {ip} IAC {telnet_commands[byte_command]} : {telnet_command_options[byte_option]}")
+                        commands.append([byte_command, byte_option])
+                    else:
+                        logging.info(f"FROM {ip} IAC {telnet_commands[byte_command]} UNKNOWN OPTION: {telnet_command_options[byte_option]}")
                 else:
-                    log_command(IP, telnet_commands[buffer[i - 1]])
-                    commands.append([buffer[i - 1]])
+                    logging.info(f"FROM {ip} IAC {telnet_commands[byte_command]}")
+                    commands.append([byte_command])
             else:
-                log_iac_wrong_command(IP, buffer[i])
+                logging.warning(f"FROM {ip} INVALID IAC.")
         else:
-            log_no_iac(IP, buffer[i])
-            i += 1
-    return commands
-
-
-def index_out_of_bounds(i, buffer):
-    if len(buffer) < i:
-        return True
-    else:
-        return False
-
-
-def is_command_code(code):
-    if 255 > code > 240:
-        return True
-    else:
-        return False
-
-
-def is_command_option_code(code):
-    if code <= 49:
-        return True
-    else:
-        return False
-
-
-def log_correct_command_wrong_option(IP, command, option):
-    logging.info(f"FROM {IP} IAC {command} WRONG OPTION: {option}")
-
-
-def log_iac_wrong_command(IP, command):
-    logging.info(f"FROM {IP} IAC WRONG COMMAND {command}")
-
-
-def log_no_iac(IP, command):
-    logging.info(f"FROM {IP} NO IAC, BUT {command}")
-
-
-def log_message_option(IP, command, option):
-    logging.info(f"FROM {IP} IAC {command} : {option}")
-
-
-def log_command(IP, command):
-    logging.info(f"FROM {IP} IAC {command}")
+            text = text + chr(byte_iac)
+        i += 1
+    return commands, text
