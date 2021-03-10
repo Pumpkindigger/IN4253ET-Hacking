@@ -82,7 +82,7 @@ class TelnetThread(threading.Thread):
         self.alive = False
 
     def process_commands(self, commands):
-        for x in commands:
-            for y in x:
-                if y == 244:
+        for command in commands:
+            for byte in command:
+                if byte == 244:
                     self.terminate_thread()
