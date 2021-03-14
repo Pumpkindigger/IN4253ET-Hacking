@@ -53,10 +53,14 @@ class TelnetThread(threading.Thread):
                     continue
 
                 self.history += buffer
-                print(buffer)
-                commands = byte_parser.parse_string(buffer, self.client_ip)
+                commands, text = byte_parser.parse_buffer(buffer, self.client_ip)
                 self.process_commands(commands)
+
+                # DEBUG
                 print(self.history)
+                print(commands)
+                print(text)
+                # DEBUG
 
             if not self.welcome_send:
                 self.send_to_client(str.encode(self.profile.get('welcome')))
