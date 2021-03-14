@@ -4,7 +4,7 @@ from Profiles.DatabaseConnection import DatabaseConnection
 
 profile1 = {
     "Options": [],
-    "Welcome": "BCM96318 Broadband Router",
+    "Welcome": "BCM96318 Broadband Router\nLogin: ",
     "Authentication": "Always",
     "Command Interaction": {
         "command1": "response1",

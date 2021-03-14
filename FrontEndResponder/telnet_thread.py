@@ -26,6 +26,8 @@ class TelnetThread(threading.Thread):
         self.history = bytearray()
         self.profile = {}
         self.welcome_send = False
+        self.logged_in = False
+        self.login_username = None
 
     def run(self):
         """When the thread is started it will output some logging information and start the telnet_thread."""
@@ -38,6 +40,23 @@ class TelnetThread(threading.Thread):
         self.profile = self.database.get_random_profile()
         profile_id = self.profile.get("_id")
         logging.info(f"Requesting random profile from database. Got: {profile_id}")
+
+    def login(self, text):
+        text = text.rstrip()
+        if self.login_username is None:
+            self.login_username = text
+            self.send_to_client(str.encode("Password: "))  # TODO implement disabling echo so password won't be seen.
+        else:
+            if self.profile.get("Authentication") == "Always":  # Always login
+                self.send_to_client(str.encode("Welcome! \n"))
+                self.logged_in = True
+            elif False:
+                print(1)
+                # TODO implement authentication for specific user/pass pairs.
+            else:
+                self.login_username = None
+                self.send_to_client(str.encode("Invalid login...\nLogin: "))
+
 
     def telnet_thread(self):
         """Handling of incoming/outgoing bytes."""
@@ -56,8 +75,11 @@ class TelnetThread(threading.Thread):
                 commands, text = byte_parser.parse_buffer(buffer, self.client_ip)
                 self.process_commands(commands)
 
+                if len(text.rstrip()) > 0 and not self.logged_in:
+                    self.login(text)
+
                 # DEBUG
-                print(self.history)
+                #print(self.history)
                 print(commands)
                 print(text)
                 # DEBUG
