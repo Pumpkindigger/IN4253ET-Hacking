@@ -6,6 +6,7 @@ import logging
 import byte_parser
 from Profiles.ProfileLogic import ProfileLogic
 
+
 # Options: https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.2.0/com.ibm.zos.v2r2.hald001/telcmds.htm
 # Options: https://www.iana.org/assignments/telnet-options/telnet-options.xhtml
 # RFC: https://tools.ietf.org/html/rfc854
@@ -52,9 +53,14 @@ class TelnetThread(threading.Thread):
                     continue
 
                 self.history += buffer
-                print(buffer)
-                byte_parser.parse_string(buffer)
+                commands, text = byte_parser.parse_buffer(buffer, self.client_ip)
+                self.process_commands(commands)
+
+                # DEBUG
                 print(self.history)
+                print(commands)
+                print(text)
+                # DEBUG
 
             if not self.welcome_send:
                 self.send_to_client(str.encode(self.profile.get('welcome')))
@@ -74,3 +80,13 @@ class TelnetThread(threading.Thread):
         except BrokenPipeError:
             logging.warning(f"Connection unexpectedly broken from: {self.client_ip}")
             self.alive = False
+
+    def terminate_thread(self):
+        logging.info(f"{self.client_ip} terminated connection")
+        self.alive = False
+
+    def process_commands(self, commands):
+        for command in commands:
+            for byte in command:
+                if byte == 244:
+                    self.terminate_thread()

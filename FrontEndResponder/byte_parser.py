@@ -38,17 +38,17 @@ telnet_command_options = {
     35: "X Display Location",
     36: "Environment Option",
     37: "Authentication Option",
-    38: "Encryption Option	",
+    38: "Encryption Option",
     39: "New Environment Option",
-    40: "TN3270E	",
-    41: "XAUTH	",
+    40: "TN3270E",
+    41: "XAUTH",
     42: "CHARSET",
-    43: "Telnet Remote Serial Port (RSP)	",
-    44: "Com Port Control Option	",
-    45: "Telnet Suppress Local Echo	",
-    46: "Telnet Start TLS	",
-    47: "KERMIT	",
-    48: "SEND-URL	",
+    43: "Telnet Remote Serial Port (RSP)",
+    44: "Com Port Control Option",
+    45: "Telnet Suppress Local Echo",
+    46: "Telnet Start TLS",
+    47: "KERMIT",
+    48: "SEND-URL",
     49: "FORWARD_X",
 }
 
@@ -56,45 +56,52 @@ telnet_commands = {
     240: "SE",
     241: "NOP",
     242: "Data Mark",
-    243: "Break	",
+    243: "BREAK",
     244: "Interrupt Process",
-    245: "Abort output",
+    245: "Abort Output",
     246: "Are You There",
-    247: "Erase character",
+    247: "Erase Character",
     248: "Erase Line",
     249: "Go ahead",
     250: "SB",
-    251: "will",
-    252: "wont",
-    253: "do",
-    254: "dont",
+    251: "WILL",
+    252: "WONT",
+    253: "DO",
+    254: "DONT",
 }
 
 
-def parse_string(buffer):
+def parse_buffer(buffer, ip):
     i = 0
+    commands = []
+    text = ""
+
     while i < len(buffer):
-        if buffer[i] == 255:
+        byte_iac = buffer[i]
+        if byte_iac == 255:  # Found an IAC!
             i += 1
-            if is_command_code(buffer[i]):
-                print(telnet_commands[buffer[i]])
-                i += 1
-                if is_command_option_code(buffer[i]):
-                    print(telnet_command_options[buffer[i]])
+            if i >= len(buffer):
+                logging.warning(f"FROM {ip} INCOMPLETE IAC.")
 
+            byte_command = buffer[i]
+            if byte_command in telnet_commands:  # Found a known command!
+                if 250 < byte_command:  # Found a telnet option command!
+                    i += 1
+                    if i >= len(buffer):
+                        logging.warning(f"FROM {ip} INCOMPLETE IAC OPTION.")
+
+                    byte_option = buffer[i]
+                    if byte_option in telnet_command_options:  # Found a known option!
+                        logging.info(f"FROM {ip} IAC {telnet_commands[byte_command]} : {telnet_command_options[byte_option]}")
+                        commands.append([byte_command, byte_option])
+                    else:
+                        logging.info(f"FROM {ip} IAC {telnet_commands[byte_command]} UNKNOWN OPTION: {telnet_command_options[byte_option]}")
+                else:
+                    logging.info(f"FROM {ip} IAC {telnet_commands[byte_command]}")
+                    commands.append([byte_command])
+            else:
+                logging.warning(f"FROM {ip} INVALID IAC.")
         else:
-            i += 1
-
-
-def is_command_code(code):
-    if (code < 255 and code > 240):
-        return True
-    else:
-        return False
-
-
-def is_command_option_code(code):
-    if (code <= 49):
-        return True
-    else:
-        return False
+            text = text + chr(byte_iac)
+        i += 1
+    return commands, text
