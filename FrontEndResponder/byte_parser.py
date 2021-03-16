@@ -102,7 +102,7 @@ def parse_buffer(buffer, ip):
                     command_array = [byte_command]
                     if byte_command == 250:  # Subnegotiation of the indicated option follows.
                         i += 1
-                        while i < len(buffer) and buffer[i] != 255:
+                        while buffer[i] != 255 and buffer[i + 1] != 240:
                             command_array.append(buffer[i])
                             i += 1
                     commands.append(command_array)
