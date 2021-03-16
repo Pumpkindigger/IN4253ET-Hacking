@@ -102,9 +102,12 @@ def parse_buffer(buffer, ip):
                     command_array = [byte_command]
                     if byte_command == 250:  # Subnegotiation of the indicated option follows.
                         i += 1
-                        while i < len(buffer) and buffer[i] != 255:
+                        while not (buffer[i] == 255 and buffer[i + 1] == 240):
                             command_array.append(buffer[i])
                             i += 1
+                        # Append IAC SE as this closes the IAC SB
+                        command_array.append(255)
+                        command_array.append(240)
                     commands.append(command_array)
             else:
                 logging.warning(f"FROM {ip} INVALID IAC.")
