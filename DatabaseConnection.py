@@ -26,9 +26,11 @@ class DatabaseConnection:
         return self.mycol.find(json)
 
     def find_entry(self, json):
+        """Select a single entry from the MongoDB collection that has the same values as the provided JSON."""
         return self.mycol.find_one(json)
 
     def find_entry_on_id(self, id):
+        """Retrieve entry from the MongoDB collection based on it's unique ID."""
         return self.mycol.find_one(id)
 
     def get_random_entry(self):
