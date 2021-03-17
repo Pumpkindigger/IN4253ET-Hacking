@@ -8,7 +8,7 @@ import sys
 
 from FrontEndResponder.telnet_thread import TelnetThread
 from Profiles.ProfileLogic import ProfileLogic
-from Profiles.DatabaseConnection import DatabaseConnection
+from DatabaseConnection import DatabaseConnection
 
 
 def init_logging():
