@@ -7,6 +7,7 @@ import time
 import sys
 
 from FrontEndResponder.telnet_thread import TelnetThread
+from Logging.LoggingLogic import LoggingLogic
 from Profiles.ProfileLogic import ProfileLogic
 from DatabaseConnection import DatabaseConnection
 
@@ -39,21 +40,22 @@ def init_socket():
 
 
 def init_database_conn():
-    return ProfileLogic(DatabaseConnection("myFirstDatabase", "profiles"))
+    return ProfileLogic(DatabaseConnection("myFirstDatabase", "profiles")),\
+           LoggingLogic(DatabaseConnection("myFirstDatabase", "logging"))
 
 
 def handle_incoming_connections(listener):
     """Endless loop to automatically accept the connection and create a TelnetThread."""
-    global database
+    global database_profile, database_logging
     try:
         while True:
             client, address = listener.accept()
-            TelnetThread(client, database).start()
+            TelnetThread(client, database_profile, database_logging).start()
     except KeyboardInterrupt:
         logging.info("Closing FrontEndResponder...")
         listener.shutdown(1)
         listener.close()
-        database.dbcon.client.close()
+        database_profile.dbcon.client.close()
 
         # Make sure to cleanly exit the running Telnet connections.
         for thread in threading.enumerate():
@@ -61,7 +63,10 @@ def handle_incoming_connections(listener):
                 thread.alive = False
                 thread.join()
 
+        # Closing logging database should be last as the closing telnet threads might want to write to it.
+        database_logging.dbcon.client.close()
+
 
 init_logging()
-database = init_database_conn()
+database_profile, database_logging = init_database_conn()
 handle_incoming_connections(init_socket())
