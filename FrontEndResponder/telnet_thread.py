@@ -34,7 +34,10 @@ class TelnetThread(threading.Thread):
         logging.info(f"Incoming connection received from: {self.client_ip}.")
         self.set_random_profile()
         self.telnet_thread()
+
         logging.info(f"Connection closed from: {self.client_ip}")
+        logging_id = self.database_logging.insert_log(self.profile.get("_id"), self.client_ip, self.history)
+        logging.info(f"Session from {self.client_ip} is logged to MongoDB with id: {logging_id}")
 
     def set_random_profile(self):
         self.profile = self.database_profile.get_random_profile()
