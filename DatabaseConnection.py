@@ -11,8 +11,10 @@ class DatabaseConnection:
         self.mycol = self.mydb[collection]
 
     def add_entry(self, json):
-        json["_id"] = str(ObjectId())
+        object_id = str(ObjectId())
+        json["_id"] = object_id
         self.mycol.insert_one(json)
+        return object_id
 
     def delete_entry(self, json):
         self.mycol.delete_one(json)
