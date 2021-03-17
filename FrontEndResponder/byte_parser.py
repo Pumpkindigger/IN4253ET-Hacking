@@ -105,9 +105,7 @@ def parse_buffer(buffer, ip):
                         while not (buffer[i] == 255 and buffer[i + 1] == 240):
                             command_array.append(buffer[i])
                             i += 1
-                        # Append IAC SE as this closes the IAC SB
-                        command_array.append(255)
-                        command_array.append(240)
+                        i -= 1  # Go one back to allow parsing of IAC SE.
                     commands.append(command_array)
             else:
                 logging.warning(f"FROM {ip} INVALID IAC.")
