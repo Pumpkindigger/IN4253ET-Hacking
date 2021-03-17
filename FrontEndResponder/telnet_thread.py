@@ -43,11 +43,12 @@ class TelnetThread(threading.Thread):
         logging.info(f"Requesting random profile from database. Got: {profile_id}")
 
     def login(self, login_text):
-        self.profile["Authentication"] = {"username": "password"}
         if self.login_username is None:
             self.login_username = login_text
+            #self.send_to_client(b'\xff\xfb\x01')
             self.send_to_client(str.encode("Password: "))  # TODO implement disabling echo so password won't be seen.
         else:
+            #self.send_to_client(b'\xff\xfe\x01')
             authentication_type = self.profile.get("Authentication")
             if type(authentication_type) is str and authentication_type == "Always":  # Always accept
                 self.send_to_client(str.encode("Welcome! \n"))
