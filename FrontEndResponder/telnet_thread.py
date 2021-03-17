@@ -112,3 +112,14 @@ class TelnetThread(threading.Thread):
                 for byte in command:
                     if byte == 244:  # Interrupt Process
                         self.terminate_thread()
+                    if byte == 250:
+                        self.sub_negotiation(command)
+                        break
+
+    def sub_negotiation(self, command):
+        """Open Sub negotiation"""
+        if len(command) > 2:
+            """Negotiate About Window Size"""
+            if command[1] == 31:
+                pass
+
