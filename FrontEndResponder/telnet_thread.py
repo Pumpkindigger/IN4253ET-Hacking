@@ -28,6 +28,7 @@ class TelnetThread(threading.Thread):
         self.welcome_send = False
         self.logged_in = False
         self.login_username = None
+        self.login_counter = 0
 
     def run(self):
         """When the thread is started it will output some logging information and start the telnet_thread."""
@@ -41,19 +42,33 @@ class TelnetThread(threading.Thread):
         profile_id = self.profile.get("_id")
         logging.info(f"Requesting random profile from database. Got: {profile_id}")
 
-    def login(self, text):
-        text = text.rstrip()
+    def login(self, login_text):
+        self.profile["Authentication"] = {"username": "password"}
         if self.login_username is None:
-            self.login_username = text
+            self.login_username = login_text
             self.send_to_client(str.encode("Password: "))  # TODO implement disabling echo so password won't be seen.
         else:
-            if self.profile.get("Authentication") == "Always":  # Always login
+            authentication_type = self.profile.get("Authentication")
+            if type(authentication_type) is str and authentication_type == "Always":  # Always accept
                 self.send_to_client(str.encode("Welcome! \n"))
                 self.logged_in = True
-            elif False:
-                print(1)
-                # TODO implement authentication for specific user/pass pairs.
-            else:
+            elif type(authentication_type) is int:  # Accept after x tries
+                self.login_counter += 1
+                if self.login_counter > authentication_type:
+                    self.send_to_client(str.encode("Welcome! \n"))
+                    self.logged_in = True
+                else:
+                    self.login_username = None
+                    self.send_to_client(str.encode("Invalid login...\nLogin: "))
+            elif type(authentication_type) is dict:  # Accept for specific username/password combinations
+                required_password = authentication_type.get(self.login_username)
+                if required_password is not None and required_password == login_text:
+                    self.send_to_client(str.encode("Welcome! \n"))
+                    self.logged_in = True
+                else:
+                    self.login_username = None
+                    self.send_to_client(str.encode("Invalid login...\nLogin: "))
+            else:  # Never accept
                 self.login_username = None
                 self.send_to_client(str.encode("Invalid login...\nLogin: "))
 
@@ -75,7 +90,7 @@ class TelnetThread(threading.Thread):
                 commands, text = byte_parser.parse_buffer(buffer, self.client_ip)
                 self.process_commands(commands)
 
-                if len(text.rstrip()) > 0 and not self.logged_in:
+                if not self.logged_in and len(text) > 0:
                     self.login(text)
 
                 # DEBUG

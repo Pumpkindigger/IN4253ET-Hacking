@@ -104,4 +104,4 @@ def parse_buffer(buffer, ip):
         else:
             text = text + chr(byte_iac)
         i += 1
-    return commands, text
+    return commands, text.rstrip()
