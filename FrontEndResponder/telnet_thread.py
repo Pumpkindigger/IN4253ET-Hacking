@@ -4,6 +4,7 @@ import select  # https://docs.python.org/3/library/select.html
 import logging
 
 import byte_parser
+from Logging import LoggingLogic
 from Profiles.ProfileLogic import ProfileLogic
 
 
@@ -15,12 +16,13 @@ from Profiles.ProfileLogic import ProfileLogic
 class TelnetThread(threading.Thread):
     """Defines a Thread that includes variables and functions needed for Telnet Functionality."""
 
-    def __init__(self, client: socket, database: ProfileLogic):
+    def __init__(self, client: socket, database_profile: ProfileLogic, database_logging: LoggingLogic):
         """Extend the Thread class with variables to keep track of the client/socket connection
         if it should close, and what data has been received so far."""
         threading.Thread.__init__(self)
         self.conn = client
-        self.database = database
+        self.database_profile = database_profile
+        self.database_logging = database_logging
         self.client_ip = client.getpeername()[0]
         self.alive = True  # Ensures we can close the thread in a friendly way.
         self.history = bytearray()
@@ -35,10 +37,13 @@ class TelnetThread(threading.Thread):
         logging.info(f"Incoming connection received from: {self.client_ip}.")
         self.set_random_profile()
         self.telnet_thread()
+
         logging.info(f"Connection closed from: {self.client_ip}")
+        logging_id = self.database_logging.insert_log(self.profile.get("_id"), self.client_ip, self.history)
+        logging.info(f"Session from {self.client_ip} is logged to MongoDB with id: {logging_id}")
 
     def set_random_profile(self):
-        self.profile = self.database.get_random_profile()
+        self.profile = self.database_profile.get_random_profile()
         profile_id = self.profile.get("_id")
         logging.info(f"Requesting random profile from database. Got: {profile_id}")
 
