@@ -1,4 +1,4 @@
-from Profiles.DatabaseConnection import DatabaseConnection
+from DatabaseConnection import DatabaseConnection
 from Profiles.ProfileLogic import ProfileLogic
 
 # Test class for DatabaseConnection
@@ -20,7 +20,7 @@ example_json = {
 # Update command
 # DatabaseConnection.delete_profile({"Welcome":"BCM96318 Broadband Router"})
 dbcon = DatabaseConnection("myFirstDatabase","profiles")
-y = dbcon.get_random_profile()
+y = dbcon.get_random_entry()
 print(y)
 
 profile_1 = {

@@ -1,10 +1,10 @@
 import unittest
 from Profiles.ProfileLogic import ProfileLogic
-from Profiles.DatabaseConnection import DatabaseConnection
+from DatabaseConnection import DatabaseConnection
 
 profile1 = {
     "Options": [],
-    "Welcome": "BCM96318 Broadband Router",
+    "Welcome": "BCM96318 Broadband Router\nLogin: ",
     "Authentication": "Always",
     "Command Interaction": {
         "command1": "response1",
@@ -28,7 +28,7 @@ class ProfileTest(unittest.TestCase):
         self.assertEqual(count+1, self.dbcon.mycol.estimated_document_count())
 
     def test_get_profile(self):
-        self.dbcon.add_profile(profile1)
+        self.dbcon.add_entry(profile1)
         profile_test_1 = self.pl.get_profile(profile1["Options"], profile1["Welcome"],
                                       profile1["Authentication"])
         self.assertEqual(profile_test_1, profile1["_id"])
