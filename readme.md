@@ -37,7 +37,7 @@ First, ensure you have a working docker v19> installation. Resources we used:
 
 Then, navigate to the folder containing the Dockerfile (IoTBox), and run the following commands:  
 For building this image (once): ```docker build -t iotbox .```  
-For running an instance: ```docker run -it --cap-add=NET_ADMIN --name Lab --device=/dev/net/tun iotbox```  
+For running an instance: ```docker run -it --cap-add=NET_ADMIN --device=/dev/net/tun iotbox```  
 
 [comment]: <> (TODO add a description for getting and running the .sh file)
 [comment]: <> (TODO add a description for setting up tuntap on Mac)
