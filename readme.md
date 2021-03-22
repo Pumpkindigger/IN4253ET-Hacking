@@ -30,11 +30,14 @@ python3 -m pip install -r requirements.txt
 Username: 2GgLivbNtbRqE5Sr\
 Password: TLuekis2Qx9UVWEp
 
-### IoTBOX
-Setting up IoTBOX:  
-First navigate to the folder containing the Dockerfile, and run this command.  
-```docker build -t iotbox .```  
-```docker run -d -it --cap-add=NET_ADMIN --name Lab --device=/dev/net/tun iotbox```  
+### IoTBOX Setup
+First, ensure you have a working docker v19> installation. Resources we used:
+- docker.com
+- https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket
+
+Then, navigate to the folder containing the Dockerfile (IoTBox), and run the following commands:  
+For building this image (once): ```docker build -t iotbox .```  
+For running an instance: ```docker run -d -it --cap-add=NET_ADMIN --name Lab --device=/dev/net/tun iotbox```  
 
 [comment]: <> (TODO add a description for getting and running the .sh file)
 [comment]: <> (TODO add a description for setting up tuntap on Mac)

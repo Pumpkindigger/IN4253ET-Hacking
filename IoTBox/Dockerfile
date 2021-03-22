@@ -1,4 +1,4 @@
-FROM debian
+FROM debian:latest
 
 # Do installs
 RUN apt-get update && apt-get install -y qemu qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils libguestfs-tools  genisoimage  virtinst  libosinfo-bin  virt-manager  wget uml-utilities  net-tools
