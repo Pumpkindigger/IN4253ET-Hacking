@@ -16,6 +16,7 @@ RUN mkdir /etc/qemu
 RUN echo "allow br0" >> /etc/qemu/bridge.conf
 
 COPY setup.sh /setup.sh
+RUN chmod +x /setup.sh
 
 # https://wiki.debian.org/KVM
 # https://jamielinux.com/docs/libvirt-networking-handbook/
