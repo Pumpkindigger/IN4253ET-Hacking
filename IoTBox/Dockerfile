@@ -1,8 +1,9 @@
 FROM debian:latest
 
 # Do installs
-RUN apt-get update && apt-get install -y qemu qemu-kvm libvirt-clients libvirt-daemon-system bridge-utils libguestfs-tools genisoimage  virtinst libosinfo-bin wget uml-utilities net-tools
-
+RUN apt-get update
+RUN apt-get install --no-install-recommends -y qemu-system libvirt-clients libvirt-daemon-system virtinst # Install QEMU for virtualization, libvirt for configuration and management, virtinst for cli vm creation
+RUN apt-get install bridge-utils libguestfs-tools genisoimage libosinfo-bin wget uml-utilities net-tools
 
 
 # Download image openwrt for QEMU
@@ -15,3 +16,6 @@ RUN mkdir /etc/qemu
 RUN echo "allow br0" >> /etc/qemu/bridge.conf
 
 COPY setup.sh /setup.sh
+
+# https://wiki.debian.org/KVM
+# https://jamielinux.com/docs/libvirt-networking-handbook/
