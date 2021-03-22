@@ -28,7 +28,6 @@ class TelnetThread(threading.Thread):
         self.history = bytearray()
         self.profile = {}
         self.welcome_send = False
-        self.response_setting = 2
 
     def run(self):
         """When the thread is started it will output some logging information and start the telnet_thread."""
@@ -60,7 +59,7 @@ class TelnetThread(threading.Thread):
                 self.process_commands(commands)
 
                 # DEBUG
-                #print(self.history)
+                # print(self.history)
                 print(commands)
                 print(text)
                 # DEBUG
@@ -73,20 +72,10 @@ class TelnetThread(threading.Thread):
     def respond_to_option(self, command, accept=True):
         """Reponds to an option that is retrieved from the client.
         By default accepts the option, otherwise checks what is defined in the database profile."""
-        if self.response_setting == 1:
+        if accept:
             option_type = command[0]
             if option_type == 251:  # I Will -> You Do
-                self.send_to_client(bytearray([255, 253, command[1]]))
-            if option_type == 252:  # I Wont -> You Dont
-                self.send_to_client(bytearray([255, 254, command[1]]))
-            if option_type == 253:  # You Do -> I Will
-                self.send_to_client(bytearray([255, 251, command[1]]))
-            if option_type == 254:  # You Dont -> I wont
-                self.send_to_client(bytearray([255, 252, command[1]]))
-        elif self.response_setting == 2:
-            option_type = command[0]
-            if option_type == 251:  # I Will -> You Do
-                #Do not accept linemode
+                # Do not accept linemode
                 if command[1] == 34:
                     self.send_to_client(bytearray([255, 254, command[1]]))
                 else:
@@ -137,4 +126,3 @@ class TelnetThread(threading.Thread):
             """Negotiate About Window Size"""
             if command[1] == 31:
                 pass
-
