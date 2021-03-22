@@ -2,8 +2,8 @@ FROM debian:latest
 
 # Do installs
 RUN apt-get update
-RUN apt-get install --no-install-recommends -y qemu-system libvirt-clients libvirt-daemon-system virtinst # Install QEMU for virtualization, libvirt for configuration and management, virtinst for cli vm creation
-RUN apt-get install bridge-utils libguestfs-tools libosinfo-bin wget net-tools
+RUN apt-get install --no-install-recommends -y qemu-system libvirt-clients libvirt-daemon-system virtinst libguestfs-tools # Install QEMU for virtualization, libvirt for configuration and management, virtinst for cli vm creation, libguestsfs for accessing images.
+RUN apt-get install -y bridge-utils libosinfo-bin wget net-tools
 
 
 # Download image openwrt for QEMU
