@@ -4,7 +4,7 @@ telnet_command_options = {
     0: "Binary Transmission",
     1: "Echo",
     2: "Reconnection",
-    3: "Suppress Go Ahead",
+    3: "Suppress Go Ahead",  # https://tools.ietf.org/html/rfc858
     4: "Approx Message Size Negotiation",
     5: "Status",
     6: "Timing Mark",
@@ -34,7 +34,7 @@ telnet_command_options = {
     31: "Negotiate About Window Size",
     32: "Terminal Speed",
     33: "Remote Flow Control",
-    34: "Linemode",
+    34: "Linemode",  # https://tools.ietf.org/html/rfc1116
     35: "X Display Location",
     36: "Environment Option",
     37: "Authentication Option",
@@ -98,7 +98,15 @@ def parse_buffer(buffer, ip):
                         logging.info(f"FROM {ip} IAC {telnet_commands[byte_command]} UNKNOWN OPTION: {telnet_command_options[byte_option]}")
                 else:
                     logging.info(f"FROM {ip} IAC {telnet_commands[byte_command]}")
-                    commands.append([byte_command])
+
+                    command_array = [byte_command]
+                    if byte_command == 250:  # Subnegotiation of the indicated option follows.
+                        i += 1
+                        while not (buffer[i] == 255 and buffer[i + 1] == 240):
+                            command_array.append(buffer[i])
+                            i += 1
+                        i -= 1  # Go one back to allow parsing of IAC SE.
+                    commands.append(command_array)
             else:
                 logging.warning(f"FROM {ip} INVALID IAC.")
         else:

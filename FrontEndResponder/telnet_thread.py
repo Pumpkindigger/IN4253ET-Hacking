@@ -10,7 +10,9 @@ from Profiles.ProfileLogic import ProfileLogic
 
 # Options: https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.2.0/com.ibm.zos.v2r2.hald001/telcmds.htm
 # Options: https://www.iana.org/assignments/telnet-options/telnet-options.xhtml
+# Commands: https://users.cs.cf.ac.uk/Dave.Marshall/Internet/node141.html
 # RFC: https://tools.ietf.org/html/rfc854
+# RFC Options: https://tools.ietf.org/html/rfc1060#page-51
 
 
 class TelnetThread(threading.Thread):
@@ -100,15 +102,35 @@ class TelnetThread(threading.Thread):
                     self.login(text)
 
                 # DEBUG
-                #print(self.history)
+                # print(self.history)
                 print(commands)
                 print(text)
                 # DEBUG
 
             if not self.welcome_send:
-                self.send_to_client(str.encode(self.profile.get('welcome')))
+                self.send_to_client(str.encode(self.profile.get('Welcome')))
                 self.welcome_send = True
         self.conn.close()
+
+    def respond_to_option(self, command, accept=True):
+        """Reponds to an option that is retrieved from the client.
+        By default accepts the option, otherwise checks what is defined in the database profile."""
+        if accept:
+            option_type = command[0]
+            if option_type == 251:  # I Will -> You Do
+                # Do not accept linemode
+                if command[1] == 34:
+                    self.send_to_client(bytearray([255, 254, command[1]]))
+                else:
+                    self.send_to_client(bytearray([255, 253, command[1]]))
+            if option_type == 252:  # I Wont -> You Dont
+                self.send_to_client(bytearray([255, 254, command[1]]))
+            if option_type == 253:  # You Do -> I Will
+                self.send_to_client(bytearray([255, 251, command[1]]))
+            if option_type == 254:  # You Dont -> I wont
+                self.send_to_client(bytearray([255, 252, command[1]]))
+        else:  # TODO implement db.profile.options responses
+            print(2)
 
     def send_to_client(self, data: bytes):
         """Sends data to the client via socket."""
@@ -129,7 +151,21 @@ class TelnetThread(threading.Thread):
         self.alive = False
 
     def process_commands(self, commands):
+        """Process the retrieved commands by returning options or taking other actions."""
         for command in commands:
-            for byte in command:
-                if byte == 244:
-                    self.terminate_thread()
+            if command[0] > 250:  # Telnet option
+                self.respond_to_option(command)
+            else:
+                for byte in command:
+                    if byte == 244:  # Interrupt Process
+                        self.terminate_thread()
+                    if byte == 250:
+                        self.sub_negotiation(command)
+                        break
+
+    def sub_negotiation(self, command):
+        """Open Sub negotiation, when SB (Code 250) gets called this function responds to the sub negotiation"""
+        if len(command) > 2:
+            """Negotiate About Window Size, accept the clients new window size"""
+            if command[1] == 31:
+                pass
