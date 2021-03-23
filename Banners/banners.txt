@@ -49,9 +49,9 @@
 'Welcome to the Windows CE Telnet Service on MY-CE-DEVICE\r\n\r\nlogin:'
 'HP JetDirect\r\nPassword is not set\r\n\r\nPlease type "menu" for the MENU system, \r\nor "?" for help, or "/" for current settings.\r\n>'
 'HP JetDirect\r\n\r\nEnter username:'
+'%connection closed by remote host!'
 'Welcome Visiting Huawei Home Gateway\r\nCopyright by Huawei Technologies Co., Ltd.\r\n\r\nLogin:'
 'Warning: Telnet is not a secure protocol, and it is recommended to use Stelnet.\r\n\r\nLogin authentication\r\n\r\n\r\nUsername:'
-"There are are roughly 69 dash characters before the CRLF in the banner below but can't be included in XML comments."
 'Cisco Configuration Professional (Cisco CP) is installed on this device. \r\nThis feature requires the one-time use of the username'
 "Catalyst 1900, unlike other Catalyst models, didn't run CatOS or IOS"
 'Catalyst 1900 Management Console\r\nCopyright (c) Cisco Systems, Inc.  1993-1998\r\nAll rights reserved.\r\nEnterprise Edition Software\r\nEthernet Address:      00-AA-19-38-AA-00\r\n\r\nPCA Number:            73-31AA-AA\r\nPCA Serial Number:     FAB033AAAAA\r\nModel Number:          WS-C1924-EN\r\nSystem Serial Number:  FAB0341AAAA\r\nPower Supply S/N:'
@@ -91,7 +91,6 @@
 '*********************************************\n\n\n* Copyright (c) 2003 Nortel Networks, Inc.  *\n\n\n* All Rights Reserved                       *\n\n\n* Passport 8010                             *\n\n\n* Software Release 3.5.0.0                  *\n\n\n*********************************************\n\n\n\n\nLogin:'
 'IPSO/i386 (BJ-IDC-FW2) (ttyp7)\n\n\nThis system is for authorized use only.\n\n\n\n\n\n\nlogin:'
 "#\n# Tasman Networks Inc. Telnet Login\n#Escape character is '^]'\n\n\n\nlogin:"
-'Dashes removed from example banner due to xml issue'
 'Welcome to Gemadept Logistics RF Server\n(C) Copyright 1994-2012 Pragma Systems, Inc.\nlogin name:'
 'Application Required. No Installation Default\nEnter Application Name:'
 'This copy of the Ataman TCP Remote Logon Services is registered as licensed to:\nECI2/DDMS\nAccount Name:'
@@ -106,6 +105,7 @@
 'Data ONTAP (s500.)\nlogin:'
 'Welcome to OpenVMS (TM) Alpha Operating System, Version V8.4     - NOT70\n\nUsername:'
 'SCO OpenServer(TM) Release 5 (bomdia.co.za) (ttyp6)\nlogin:'
+'% Username:  timeout expired!'
 'TELNET session now in ESTABLISHED state\n\nGEO-003 login:'
 'CONEXANT SYSTEMS, INC. ACCESS RUNNER ADSL CONSOLE PORT>>>LOGON PASSWORD>3.27******'
 'System administrator is connecting from 54.39.173.86\n\nReject the connection request !!!'

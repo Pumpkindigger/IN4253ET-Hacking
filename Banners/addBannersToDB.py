@@ -2,9 +2,9 @@ from Profiles.ProfileLogic import ProfileLogic
 from Profiles.DatabaseConnection import DatabaseConnection
 
 file = open('banners.txt', 'r')
-lines = file.readlines()
-pl = ProfileLogic(DatabaseConnection("myFirstDatabase", "profiles"))
+bannerList = file.readlines()
+pl = ProfileLogic(DatabaseConnection("profileDB", "profiles"))
 
-for line in lines:
-    line = line.strip()[1:-1]
-    pl.insert_profile({}, line, 'Always')
+for banner in bannerList:
+    banner = banner.strip()[1:-1]
+    pl.insert_profile({}, banner, 'Always')

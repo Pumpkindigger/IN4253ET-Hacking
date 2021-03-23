@@ -2,22 +2,6 @@ import re
 
 text = '''<?xml version='1.0' encoding='UTF-8'?>
 <fingerprints protocol="telnet" database_type="service" preference=".80">
-  <!--
-  TELNET banners with CR/LF/whitespace trimmed from either end.
-  Examples with CR, LF, etc must be base64 encoded in order to past tests.
-  Please follow the style established below.
-  -->
-
-  <!--
-  The following 'assert nothing' block is intended to handle banners so simple
-  that they cannot be attributed to a product or vendor. They are at the
-  beginning of the file as a performance tweak given how frequenty they occur.
-  NOTE:
-  Due to the multi-line nature of TELNET banners the regex are leveraging \A
-  instead of ^ to prevent matching in the beginning of a 'line' (^) instead of
-  at the beginning of the string (\A). This has been verified to work with
-  Ruby, Python, Java, and Golang.
-  -->
 
   <fingerprint pattern="\A(?i)(?:\r|\n)*login:\s*$">
     <description>bare 'login:' -- assert nothing.</description>
@@ -44,8 +28,6 @@ text = '''<?xml version='1.0' encoding='UTF-8'?>
     <description>bare 'Connection refused' -- assert nothing.</description>
     <example>Connection refused</example>
   </fingerprint>
-
-  <!-- end of assert nothing block -->
 
   <fingerprint pattern="^(?:\r|\n)*User Access Verification(?:\r|\n)+(?:Username|Password):\s*$">
     <description>Cisco switch or router - user access variant</description>
@@ -703,7 +685,6 @@ text = '''<?xml version='1.0' encoding='UTF-8'?>
 
   <fingerprint pattern="^(?:\r|\n)*(?:% Password expiration warning.\r\n)?-+\r\nCisco Configuration Professional \(Cisco CP\) is installed on this device. \r\nThis feature requires the one-time use of the username">
     <description>Cisco router - Cisco Configuration Pro  variant</description>
-    <!-- There are are roughly 69 dash characters before the CRLF in the banner below but can't be included in XML comments. -->
 
     <!-- \r\nCisco Configuration Professional (Cisco CP) is installed on this device. \r\nThis feature requires the one-time use of the username -->
 
@@ -1316,7 +1297,6 @@ text = '''<?xml version='1.0' encoding='UTF-8'?>
     <description>Tasman Networks Login</description>
     <!-- #\n# Tasman Networks Inc. Telnet Login\n#Escape character is '^]'\n\n\n\nlogin: -->
 
-    <!-- Dashes removed from example banner due to xml issue -->
 
     <example _encoding="base64" os.vendor="Tasman Networks">
       Iy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0
@@ -1656,7 +1636,6 @@ text = '''<?xml version='1.0' encoding='UTF-8'?>
 
   <fingerprint pattern="(?m)(ES|RS)\s([^\s]+) System Software, Version ([^\s]+).*Riverstone Networks" flags="REG_MULTILINE">
     <description>a Riverstone router</description>
-    <!-- Using '+' instead of '-' due to xml issue -->
 
     <!-- ++++++++++++++++++++++++++++++++++\nES 10170 System Software, Version 9.3.0.4\n
     Riverstone Networks, Inc., Copyright (c) 2000-2003. All rights reserved.\nSystem started on 2018-09-06 15:58:\n
