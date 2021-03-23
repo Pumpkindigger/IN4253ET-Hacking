@@ -4,6 +4,7 @@ import select  # https://docs.python.org/3/library/select.html
 import logging
 
 import byte_parser
+from Logging import LoggingLogic
 from Profiles.ProfileLogic import ProfileLogic
 
 
@@ -17,29 +18,68 @@ from Profiles.ProfileLogic import ProfileLogic
 class TelnetThread(threading.Thread):
     """Defines a Thread that includes variables and functions needed for Telnet Functionality."""
 
-    def __init__(self, client: socket, database: ProfileLogic):
+    def __init__(self, client: socket, database_profile: ProfileLogic, database_logging: LoggingLogic):
         """Extend the Thread class with variables to keep track of the client/socket connection
         if it should close, and what data has been received so far."""
         threading.Thread.__init__(self)
         self.conn = client
-        self.database = database
+        self.database_profile = database_profile
+        self.database_logging = database_logging
         self.client_ip = client.getpeername()[0]
         self.alive = True  # Ensures we can close the thread in a friendly way.
         self.history = bytearray()
         self.profile = {}
         self.welcome_send = False
+        self.logged_in = False
+        self.login_username = None
+        self.login_counter = 0
 
     def run(self):
         """When the thread is started it will output some logging information and start the telnet_thread."""
         logging.info(f"Incoming connection received from: {self.client_ip}.")
         self.set_random_profile()
         self.telnet_thread()
+
         logging.info(f"Connection closed from: {self.client_ip}")
+        logging_id = self.database_logging.insert_log(self.profile.get("_id"), self.client_ip, self.history)
+        logging.info(f"Session from {self.client_ip} is logged to MongoDB with id: {logging_id}")
 
     def set_random_profile(self):
-        self.profile = self.database.get_random_profile()
+        self.profile = self.database_profile.get_random_profile()
         profile_id = self.profile.get("_id")
         logging.info(f"Requesting random profile from database. Got: {profile_id}")
+
+    def login(self, login_text):
+        if self.login_username is None:
+            self.login_username = login_text
+            #self.send_to_client(b'\xff\xfb\x01')
+            self.send_to_client(str.encode("Password: "))  # TODO implement disabling echo so password won't be seen.
+        else:
+            #self.send_to_client(b'\xff\xfe\x01')
+            authentication_type = self.profile.get("Authentication")
+            if type(authentication_type) is str and authentication_type == "Always":  # Always accept
+                self.send_to_client(str.encode("Welcome! \n"))
+                self.logged_in = True
+            elif type(authentication_type) is int:  # Accept after x tries
+                self.login_counter += 1
+                if self.login_counter > authentication_type:
+                    self.send_to_client(str.encode("Welcome! \n"))
+                    self.logged_in = True
+                else:
+                    self.login_username = None
+                    self.send_to_client(str.encode("Invalid login...\nLogin: "))
+            elif type(authentication_type) is dict:  # Accept for specific username/password combinations
+                required_password = authentication_type.get(self.login_username)
+                if required_password is not None and required_password == login_text:
+                    self.send_to_client(str.encode("Welcome! \n"))
+                    self.logged_in = True
+                else:
+                    self.login_username = None
+                    self.send_to_client(str.encode("Invalid login...\nLogin: "))
+            else:  # Never accept
+                self.login_username = None
+                self.send_to_client(str.encode("Invalid login...\nLogin: "))
+
 
     def telnet_thread(self):
         """Handling of incoming/outgoing bytes."""
@@ -57,6 +97,9 @@ class TelnetThread(threading.Thread):
                 self.history += buffer
                 commands, text = byte_parser.parse_buffer(buffer, self.client_ip)
                 self.process_commands(commands)
+
+                if not self.logged_in and len(text) > 0:
+                    self.login(text)
 
                 # DEBUG
                 # print(self.history)
