@@ -108,7 +108,7 @@ class TelnetThread(threading.Thread):
                 # DEBUG
 
             if not self.welcome_send:
-                # self.send_to_client(str.encode(self.profile.get('welcome')))
+                self.send_to_client(str.encode(self.profile.get('Welcome')))
                 self.welcome_send = True
         self.conn.close()
 
