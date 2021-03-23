@@ -121,8 +121,8 @@ class TelnetThread(threading.Thread):
                         break
 
     def sub_negotiation(self, command):
-        """Open Sub negotiation"""
+        """Open Sub negotiation, when SB (Code 250) gets called this function responds to the sub negotiation"""
         if len(command) > 2:
-            """Negotiate About Window Size"""
+            """Negotiate About Window Size, accept the clients new window size"""
             if command[1] == 31:
                 pass
