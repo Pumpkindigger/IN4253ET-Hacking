@@ -2,7 +2,7 @@ FROM debian:latest
 
 # Do installs
 RUN apt-get update
-RUN apt-get install --no-install-recommends -y qemu-system libvirt-clients libvirt-daemon-system virtinst libguestfs-tools # Install QEMU for virtualization, libvirt for configuration and management, virtinst for cli vm creation, libguestsfs for accessing images.
+RUN apt-get install --no-install-recommends -y qemu-system libvirt-clients libvirt-daemon-system virtinst libguestfs-tools telnet # Install QEMU for virtualization, libvirt for configuration and management, virtinst for cli vm creation, libguestsfs for accessing images, telnet for establishing connection to the VMs.
 RUN apt-get install -y bridge-utils libosinfo-bin wget net-tools
 
 
@@ -10,6 +10,12 @@ RUN apt-get install -y bridge-utils libosinfo-bin wget net-tools
 RUN mkdir /qemu_images
 RUN wget -P /qemu_images https://downloads.openwrt.org/releases/19.07.7/targets/x86/64/openwrt-19.07.7-x86-64-combined-ext4.img.gz
 RUN gunzip /qemu_images/openwrt-19.07.7-x86-64-combined-ext4.img.gz
+
+#Download mips
+RUN wget -P /qemu_images https://downloads.openwrt.org/releases/19.07.7/targets/malta/be/openwrt-19.07.7-malta-be-vmlinux-initramfs.elf
+
+#Download arm image
+#RUN wget -P /qemu_images https://cdimage.debian.org/debian-cd/current/armhf/iso-cd/debian-10.8.0-armhf-netinst.iso
 
 # Make bridge.conf file to allow bridge utilities for QEMU
 RUN mkdir /etc/qemu
