@@ -118,16 +118,15 @@ class TelnetThread(threading.Thread):
         if accept:
             option_type = command[0]
             if option_type == 251:  # I Will -> You Do
-                # Do not accept linemode
-                if command[1] == 34:
-                    self.send_to_client(bytearray([255, 254, command[1]]))
+                if command[1] == 34 or command[1] == 33:  # Required to disable Linemode or Remote Flow Control Option.
+                    self.send_to_client(bytearray([255, 252, command[1]]))
                 else:
                     self.send_to_client(bytearray([255, 253, command[1]]))
             if option_type == 252:  # I Wont -> You Dont
                 self.send_to_client(bytearray([255, 254, command[1]]))
             if option_type == 253:  # You Do -> I Will
                 self.send_to_client(bytearray([255, 251, command[1]]))
-            if option_type == 254:  # You Dont -> I wont
+            if option_type == 254:  # You Dont -> I Wont
                 self.send_to_client(bytearray([255, 252, command[1]]))
         else:  # TODO implement db.profile.options responses
             print(2)
