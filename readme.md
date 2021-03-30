@@ -39,5 +39,8 @@ Then, navigate to the folder containing the Dockerfile (IoTBox), and run the fol
 For building this image (once): ```docker build -t iotbox .```  
 For running an instance: ```docker run -it --cap-add=NET_ADMIN --device=/dev/net/tun iotbox```  
 
+For MacOS one should install tap interfaces. You can use the command ```brew install --cask tuntap```.
+The command for running an instance is ```docker run -it --cap-add=NET_ADMIN --device=/dev iotbox```
+
 [comment]: <> (TODO add a description for getting and running the .sh file)
 [comment]: <> (TODO add a description for setting up tuntap on Mac)
