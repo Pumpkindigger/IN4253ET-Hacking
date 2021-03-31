@@ -15,11 +15,7 @@ RUN gunzip /qemu_images/openwrt-19.07.7-x86-64-combined-ext4.img.gz
 RUN wget -P /qemu_images https://downloads.openwrt.org/releases/19.07.7/targets/malta/be/openwrt-19.07.7-malta-be-vmlinux-initramfs.elf
 
 # Download arm image
-RUN wget -P /qemu_images https://cdimage.debian.org/cdimage/openstack/current/debian-10-openstack-arm64.qcow2
-
-# Download ppc image
-RUN wget -P /qemu_images https://cdimage.debian.org/cdimage/bullseye_di_alpha3/ppc64el/iso-cd/debian-bullseye-DI-alpha3-ppc64el-netinst.iso
-#RUN wget -P /qemu_images https://cdimage.debian.org/debian-cd/current/ppc64el/iso-cd/debian-10.8.0-ppc64el-netinst.iso
+RUN wget -P /qemu_images https://downloads.openwrt.org/releases/19.07.7/targets/armvirt/64/openwrt-19.07.7-armvirt-64-Image-initramfs
 
 # Make bridge.conf file to allow bridge utilities for QEMU
 RUN mkdir /etc/qemu
