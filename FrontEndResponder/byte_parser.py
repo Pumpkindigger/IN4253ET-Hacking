@@ -25,21 +25,21 @@ telnet_command_options = {
     21: "SUPDUP",
     22: "SUPDUP Output",
     23: "Send Location",
-    24: "End of Record",
+    24: "End of Record",  # https://tools.ietf.org/html/rfc885
     26: "TACACS User Identification",
     27: "Output Marking",
     28: "Terminal Location Number",
     29: "Telnet 3270 Regime",
     30: "X.3 PAD",
-    31: "Negotiate About Window Size",
-    32: "Terminal Speed",
-    33: "Remote Flow Control",
+    31: "Negotiate About Window Size",  # https://tools.ietf.org/html/rfc1073
+    32: "Terminal Speed",  # https://tools.ietf.org/html/rfc1079
+    33: "Remote Flow Control",  # https://tools.ietf.org/html/rfc1372
     34: "Linemode",  # https://tools.ietf.org/html/rfc1116
     35: "X Display Location",
     36: "Environment Option",
     37: "Authentication Option",
     38: "Encryption Option",
-    39: "New Environment Option",
+    39: "New Environment Option",  # https://tools.ietf.org/html/rfc1572
     40: "TN3270E",
     41: "XAUTH",
     42: "CHARSET",
