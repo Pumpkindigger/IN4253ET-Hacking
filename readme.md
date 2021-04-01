@@ -23,8 +23,8 @@ python3 -m pip install -r requirements.txt
 ```
 
 ## Usage
-`server.py` is our IoT Honeypot  
-`client.pt` is used to test and create telnet connections
+`./iotpot/main.py` is our IoT Honeypot.  
+`qemu-setup.sh` is used to start the qemu instances within docker.
 
 ### Shodan
 Username: 2GgLivbNtbRqE5Sr\
@@ -35,7 +35,7 @@ First, ensure you have a working docker v19> installation. Resources we used:
 - docker.com
 - https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket
 
-Then, navigate to the folder containing the Dockerfile (IoTBox), and run the following commands:  
+Then, run the following commands:  
 For building this image (once): ```docker build -t iotbox .```  
 For running an instance: ```docker run -it --cap-add=NET_ADMIN --device=/dev/net/tun iotbox```  
 
