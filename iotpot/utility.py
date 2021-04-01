@@ -1,5 +1,5 @@
-from DatabaseConnection import DatabaseConnection
-from Profiles.ProfileLogic import ProfileLogic
+from database_connection import DatabaseConnection
+from profile_logic import ProfileLogic
 
 # Test class for DatabaseConnection
 

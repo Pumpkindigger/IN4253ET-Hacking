@@ -4,8 +4,8 @@ import select  # https://docs.python.org/3/library/select.html
 import logging
 
 import byte_parser
-from Logging import LoggingLogic
-from Profiles.ProfileLogic import ProfileLogic
+from logging_logic import LoggingLogic
+from profile_logic import ProfileLogic
 
 
 # Options: https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.2.0/com.ibm.zos.v2r2.hald001/telcmds.htm

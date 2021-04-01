@@ -1,10 +1,7 @@
 FROM debian:latest
 
-# Do installs
-RUN apt-get update
-RUN apt-get install --no-install-recommends -y qemu-system libvirt-clients libvirt-daemon-system virtinst libguestfs-tools telnet # Install QEMU for virtualization, libvirt for configuration and management, virtinst for cli vm creation, libguestsfs for accessing images, telnet for establishing connection to the VMs.
-RUN apt-get install -y bridge-utils libosinfo-bin wget net-tools
-RUN apt-get install qemu-efi-aarch64
+# Install QEMU for virtualization, libvirt for configuration and management, virtinst for cli vm creation, libguestsfs for accessing images, telnet for establishing connection to the VMs.
+RUN apt-get update && apt-get install --no-install-recommends -y qemu-system libvirt-clients libvirt-daemon-system virtinst libguestfs-tools telnet bridge-utils libosinfo-bin wget net-tools python3-pip qemu-efi-aarch64
 
 # Download image x86 openwrt for QEMU
 RUN mkdir /qemu_images
@@ -28,6 +25,7 @@ RUN chmod +x /qemu-setup.sh
 # Add iotpot to docker instance
 RUN mkdir /iotpot
 COPY ./iotpot/ /iotpot/
+RUN python3 -m pip install -r /iotpot/requirements.txt
 
 # https://wiki.debian.org/KVM
 # https://jamielinux.com/docs/libvirt-networking-handbook/
