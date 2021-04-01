@@ -3,9 +3,9 @@ import socket  # https://docs.python.org/3/library/socket.html
 import select  # https://docs.python.org/3/library/select.html
 import logging
 
-import byte_parser
-from logging_logic import LoggingLogic
-from profile_logic import ProfileLogic
+from frontendresponder.byte_parser import ByteParser
+from database.logging_logic import LoggingLogic
+from database.profile_logic import ProfileLogic
 
 
 # Options: https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.2.0/com.ibm.zos.v2r2.hald001/telcmds.htm
@@ -95,7 +95,7 @@ class TelnetThread(threading.Thread):
                     continue
 
                 self.history += buffer
-                commands, text = byte_parser.parse_buffer(buffer, self.client_ip)
+                commands, text = ByteParser.parse_buffer(buffer, self.client_ip)
                 self.process_commands(commands)
 
                 if not self.logged_in and len(text) > 0:

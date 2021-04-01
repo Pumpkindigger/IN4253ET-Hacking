@@ -1,5 +1,5 @@
-from database_connection import DatabaseConnection
-from profile_logic import ProfileLogic
+from iotpot.database.database_connection import DatabaseConnection
+from iotpot.database.profile_logic import ProfileLogic
 
 # Test class for DatabaseConnection
 
