@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Create bridge
 brctl addbr br0
 
@@ -12,4 +14,3 @@ qemu-system-mips -kernel /qemu_images/openwrt-19.07.7-malta-be-vmlinux-initramfs
 
 # Start ARM QEMU instance
 qemu-system-aarch64 -m 1024 -smp 2 -cpu cortex-a57 -M virt -kernel /qemu_images/openwrt-19.07.7-armvirt-64-Image-initramfs -net nic -net bridge,br=br0 -daemonize -serial telnet:localhost:4323,server,nowait;
-
