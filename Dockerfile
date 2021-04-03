@@ -1,7 +1,7 @@
 FROM debian:latest
 
 # Install QEMU for virtualization, libvirt for configuration and management, virtinst for cli vm creation, libguestsfs for accessing images, telnet for establishing connection to the VMs.
-RUN apt-get update && apt-get install --no-install-recommends -y qemu-system libvirt-clients libvirt-daemon-system virtinst libguestfs-tools telnet bridge-utils libosinfo-bin wget net-tools python3-pip qemu-efi-aarch64
+RUN apt-get update && apt-get install --no-install-recommends -y qemu-system libvirt-clients libvirt-daemon-system virtinst libguestfs-tools telnet bridge-utils libosinfo-bin wget net-tools python3-pip qemu-efi-aarch64 tmux
 
 # Download image x86 openwrt for QEMU
 RUN mkdir /qemu_images
