@@ -22,9 +22,11 @@ source env/bin/activate
 python3 -m pip install -r requirements.txt
 ```
 
-## Usage
-`./iotpot/main.py` is our IoT Honeypot.  
-`qemu-setup.sh` is used to start the qemu instances within docker.
+## Folder Structure
+`./database/` folder contains scripts that we used to populate our MongoDB database with banners.  
+`./iotpot/` folder contains the code for our IoT Honeypot.  
+`qemu-setup.sh` is used to start the qemu instances within docker.  
+`Dockerfile` is used to build and configure the docker instance.
 
 ### Shodan
 Username: 2GgLivbNtbRqE5Sr\
