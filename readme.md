@@ -44,6 +44,7 @@ For running an instance: ```docker run -it --cap-add=NET_ADMIN --device=/dev/net
 For MacOS one should install tap interfaces. You can use the command ```brew install --cask tuntap```.
 The command for running an instance is ```docker run -it --cap-add=NET_ADMIN --device=/dev iotbox```
 
-To set up the qemu instances, run ```./setup.sh``` in the docker container.
+To set up the qemu instances, run ```./setup.sh``` in the docker container.  
+To run our IoT Honey pot, move to `/iotpot/`  and run `python3 main.py`.
 
 [comment]: <> (TODO add a description for setting up tuntap on Mac)
