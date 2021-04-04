@@ -1,12 +1,14 @@
 from manager.vm import VM
 import time
 import logging
+import threading
 
 
 class Manager:
     def __init__(self):
         self.vm_list = []
         self.init_vms()
+        self.check_status_vms()
 
     def init_vms(self):
         """Initializes all configured architectures and store them in the class list of VMs"""
@@ -23,13 +25,15 @@ class Manager:
                 return
         self.vm_list.append(VM(id))
 
-    def restart_vm(self, id):
+    def restart_vm(self, vm):
+        logging.info(f"Refreshing the {vm.get_architecture()} architecture QEMU instance because it's old and unused.")
         # TODO: Run the bash script from Suzanne to restart a qemu instance
         return []
 
     def check_status_vms(self):
+        logging.info("Checking if any VM needs to be refreshed...")
+        threading.Timer(60.0, self.check_status_vms).start()
         current_time = int(time.time())
         for vm in self.vm_list:
             if vm.current_users == 0 and current_time - vm.start_time > 900:
-                logging.info(f"Refreshing the {vm.get_architecture()} architecture QEMU instance because it's old and unused.")
-                self.restart_vm(vm.id)
+                self.restart_vm(vm)
