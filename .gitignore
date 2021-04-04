@@ -5,4 +5,4 @@ logs/
 venv/
 __pychache__/
 *.pyc
-Banners/banners.txt
+database/banners.txt

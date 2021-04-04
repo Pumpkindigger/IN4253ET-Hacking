@@ -22,9 +22,11 @@ source env/bin/activate
 python3 -m pip install -r requirements.txt
 ```
 
-## Usage
-`server.py` is our IoT Honeypot  
-`client.pt` is used to test and create telnet connections
+## Folder Structure
+`./database/` folder contains scripts that we used to populate our MongoDB database with banners.  
+`./iotpot/` folder contains the code for our IoT Honeypot.  
+`qemu-setup.sh` is used to start the qemu instances within docker.  
+`Dockerfile` is used to build and configure the docker instance.
 
 ### Shodan
 Username: 2GgLivbNtbRqE5Sr\
@@ -35,13 +37,14 @@ First, ensure you have a working docker v19> installation. Resources we used:
 - docker.com
 - https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket
 
-Then, navigate to the folder containing the Dockerfile (IoTBox), and run the following commands:  
+Then, run the following commands:  
 For building this image (once): ```docker build -t iotbox .```  
 For running an instance: ```docker run -it --cap-add=NET_ADMIN --device=/dev/net/tun iotbox```  
 
 For MacOS one should install tap interfaces. You can use the command ```brew install --cask tuntap```.
 The command for running an instance is ```docker run -it --cap-add=NET_ADMIN --device=/dev iotbox```
 
-To set up the qemu instances, run ```./setup.sh``` in the docker container.
+To set up the qemu instances, run ```./setup.sh``` in the docker container.  
+To run our IoT Honey pot, move to `/iotpot/`  and run `python3 main.py`.
 
 [comment]: <> (TODO add a description for setting up tuntap on Mac)

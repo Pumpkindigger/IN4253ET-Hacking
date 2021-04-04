@@ -6,10 +6,10 @@ import os
 import time
 import sys
 
-from FrontEndResponder.telnet_thread import TelnetThread
-from Logging.LoggingLogic import LoggingLogic
-from Profiles.ProfileLogic import ProfileLogic
-from DatabaseConnection import DatabaseConnection
+from frontendresponder.telnet_thread import TelnetThread
+from database.logging_logic import LoggingLogic
+from database.profile_logic import ProfileLogic
+from database.database_connection import DatabaseConnection
 
 
 def init_logging():

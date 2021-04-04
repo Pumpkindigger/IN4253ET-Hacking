@@ -1,5 +1,5 @@
-from Profiles.ProfileLogic import ProfileLogic
-from Profiles.DatabaseConnection import DatabaseConnection
+from iotpot.database.profile_logic import ProfileLogic
+from iotpot.database.database_connection import DatabaseConnection
 
 file = open('banners.txt', 'r')
 bannerList = file.readlines()

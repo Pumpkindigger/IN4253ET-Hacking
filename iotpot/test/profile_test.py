@@ -1,6 +1,6 @@
 import unittest
 from Profiles.ProfileLogic import ProfileLogic
-from DatabaseConnection import DatabaseConnection
+from database_connection import DatabaseConnection
 
 profile1 = {
     "Options": [],

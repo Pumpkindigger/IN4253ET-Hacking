@@ -1,5 +1,6 @@
 import re
 
+# Text found at: https://github.com/rapid7/recog/blob/master/xml/telnet_banners.xml
 text = '''<?xml version='1.0' encoding='UTF-8'?>
 <fingerprints protocol="telnet" database_type="service" preference=".80">
 
