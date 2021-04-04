@@ -45,7 +45,7 @@ class TelnetThread(threading.Thread):
         self.telnet_thread()
 
         logging.info(f"Connection closed from: {self.client_ip}")
-        logging_id = self.database_logging.insert_log(self.profile.get("_id"), self.client_ip, self.history)
+        logging_id = self.database_logging.insert_log(self.profile.get("_id"), self.client_ip, self.history, self.vm_connection.get_architecture())
         logging.info(f"Session from {self.client_ip} is logged to MongoDB with id: {logging_id}")
         self.vm_connection.current_users -= 1
 
