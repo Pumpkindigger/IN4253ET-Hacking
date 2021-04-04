@@ -1,0 +1,35 @@
+from manager.vm import VM
+import time
+import logging
+
+
+class Manager:
+    def __init__(self):
+        self.vm_list = []
+        self.init_vms()
+
+    def init_vms(self):
+        """Initializes all configured architectures and store them in the class list of VMs"""
+        # The amount of supported architectures is currently hardcoded to 3.
+        architectures = 3
+        for i in range(architectures):
+            self.init_vm(i)
+
+    def init_vm(self, id):
+        """Initialize a telnet connection to a VM if this VM is currently not in the VM list."""
+        for vm in self.vm_list:
+            if vm.id == id:
+                logging.warning(f"Tried to initialize the {vm.get_architecture()} QEMU instance while it already exists.")
+                return
+        self.vm_list.append(VM(id))
+
+    def restart_vm(self, id):
+        # TODO: Run the bash script from Suzanne to restart a qemu instance
+        return []
+
+    def check_status_vms(self):
+        current_time = int(time.time())
+        for vm in self.vm_list:
+            if vm.current_users == 0 and current_time - vm.start_time > 900:
+                logging.info(f"Refreshing the {vm.get_architecture()} architecture QEMU instance because it's old and unused.")
+                self.restart_vm(vm.id)
