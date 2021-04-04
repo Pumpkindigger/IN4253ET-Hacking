@@ -26,6 +26,7 @@ RUN chmod +x /qemu-setup.sh
 RUN mkdir /iotpot
 COPY ./iotpot/ /iotpot/
 RUN python3 -m pip install -r /iotpot/requirements.txt
+RUN chmod +x /iotpot/manager/restart.sh
 
 # https://wiki.debian.org/KVM
 # https://jamielinux.com/docs/libvirt-networking-handbook/
