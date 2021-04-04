@@ -27,6 +27,12 @@ class VM:
         logging.info(f"Trying to set up a telnet connection to the {self.get_architecture()} VM...")
         return telnetlib.Telnet("127.0.0.1", self.port)
 
+    def start_session(self):
+        if self.current_users == 0:
+            self.run_command("")
+            self.telnet_connection.read_very_eager()  # This is done to flush the boot messages
+        self.current_users += 1
+
     def run_command(self, command):
         self.telnet_connection.write(str.encode(command + "\n"))
         time.sleep(1)

@@ -40,7 +40,7 @@ class TelnetThread(threading.Thread):
         """When the thread is started it will output some logging information and start the telnet_thread."""
         logging.info(f"Incoming connection received from: {self.client_ip}.")
         logging.info(f"For {self.client_ip}: Using {self.vm_connection.get_architecture()} architecture.")
-        self.vm_connection.current_users += 1
+        self.vm_connection.start_session()
         self.set_random_profile()
         self.telnet_thread()
 
