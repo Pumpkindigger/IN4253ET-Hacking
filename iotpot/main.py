@@ -59,6 +59,7 @@ def handle_incoming_connections(listener):
         listener.shutdown(1)
         listener.close()
         database_profile.dbcon.client.close()
+        vm_manager.thread.cancel()
 
         # Make sure to cleanly exit the running Telnet connections.
         for thread in threading.enumerate():

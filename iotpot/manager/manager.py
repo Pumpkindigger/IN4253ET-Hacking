@@ -7,8 +7,8 @@ import threading
 class Manager:
     def __init__(self):
         self.vm_list = []
+        self.thread = self.start_thread()
         self.init_vms()
-        self.check_status_vms()
 
     def init_vms(self):
         """Initializes all configured architectures and store them in the class list of VMs"""
@@ -30,9 +30,14 @@ class Manager:
         # TODO: Run the bash script from Suzanne to restart a qemu instance
         return []
 
+    def start_thread(self):
+        thread = threading.Timer(60.0, self.check_status_vms)
+        thread.start()
+        return thread
+
     def check_status_vms(self):
         logging.info("Checking if any VM needs to be refreshed...")
-        threading.Timer(60.0, self.check_status_vms).start()
+        self.thread = self.start_thread()
         current_time = int(time.time())
         for vm in self.vm_list:
             if vm.current_users == 0 and current_time - vm.start_time > 900:
