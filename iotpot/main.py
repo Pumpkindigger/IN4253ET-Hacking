@@ -40,8 +40,8 @@ def init_socket():
 
 
 def init_database_conn():
-    return ProfileLogic(DatabaseConnection("myFirstDatabase", "profiles")),\
-           LoggingLogic(DatabaseConnection("myFirstDatabase", "logging"))
+    return ProfileLogic(DatabaseConnection("profileDB", "profiles")),\
+           LoggingLogic(DatabaseConnection("profileDB", "logging"))
 
 
 def handle_incoming_connections(listener):
