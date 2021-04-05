@@ -30,10 +30,7 @@ class Manager:
     def restart_vm(self, vm):
         logging.info(f"Refreshing the {vm.get_architecture()} architecture QEMU instance because it's old and unused.")
         self.vm_list.remove(vm)
-
-        bashCmd = ["sh", "/iotpot/manager/restart.sh", str(vm.id)]
-        process = subprocess.Popen(bashCmd, stdout=subprocess.PIPE)
-
+        subprocess.run(["/qemu-restart-a-vm.sh", str(vm.id)])
         self.init_vm(vm.id)
 
     def start_thread(self):
