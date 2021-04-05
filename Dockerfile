@@ -18,15 +18,16 @@ RUN wget -P /qemu_images https://downloads.openwrt.org/releases/19.07.7/targets/
 RUN mkdir /etc/qemu
 RUN echo "allow br0" >> /etc/qemu/bridge.conf
 
-# Add qemu startup script
+# Add qemu startup and restart script
 COPY qemu-setup.sh /qemu-setup.sh
 RUN chmod +x /qemu-setup.sh
+COPY qemu-restart-a-vm.sh /qemu-restart-a-vm.sh
+RUN chmod +x /qemu-restart-a-vm.sh
 
 # Add iotpot to docker instance
 RUN mkdir /iotpot
 COPY ./iotpot/ /iotpot/
 RUN python3 -m pip install -r /iotpot/requirements.txt
-RUN chmod +x /iotpot/manager/restart.sh
 
 # https://wiki.debian.org/KVM
 # https://jamielinux.com/docs/libvirt-networking-handbook/
