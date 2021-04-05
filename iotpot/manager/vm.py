@@ -4,10 +4,12 @@ import logging
 
 
 class VM:
+    telnet_start_port = 4321  # The VMs are listening from 4321 upwards.
+
     def __init__(self, id):
         # The ports currently start at 4321 as this is hardcoded in qemu-setup.sh
         self.id = id
-        self.port = 4321 + id
+        self.port = self.telnet_start_port + id
         self.start_time = int(time.time())
         self.telnet_connection = self.init_vm_telnet()
         self.current_users = 0

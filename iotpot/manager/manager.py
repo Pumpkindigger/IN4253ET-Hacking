@@ -5,6 +5,9 @@ import threading
 
 
 class Manager:
+    architectures = 3  # The amount of supported architectures is currently hardcoded.
+    check_vm_delay_in_seconds = 60  # The delay between checking VM status.
+
     def __init__(self):
         self.vm_list = []
         self.thread = self.start_thread()
@@ -12,9 +15,7 @@ class Manager:
 
     def init_vms(self):
         """Initializes all configured architectures and store them in the class list of VMs"""
-        # The amount of supported architectures is currently hardcoded to 3.
-        architectures = 3
-        for i in range(architectures):
+        for i in range(self.architectures):
             self.init_vm(i)
 
     def init_vm(self, id):
@@ -31,7 +32,7 @@ class Manager:
         return []
 
     def start_thread(self):
-        thread = threading.Timer(60.0, self.check_status_vms)
+        thread = threading.Timer(self.check_vm_delay_in_seconds, self.check_status_vms)
         thread.start()
         return thread
 
