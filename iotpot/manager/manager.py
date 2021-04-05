@@ -3,7 +3,6 @@ import time
 import logging
 import threading
 import subprocess
-import telnetlib
 
 
 class Manager:
@@ -29,6 +28,7 @@ class Manager:
 
     def restart_vm(self, vm):
         logging.info(f"Refreshing the {vm.get_architecture()} architecture QEMU instance because it's old and unused.")
+        vm.close_telnet_connection()
         self.vm_list.remove(vm)
         subprocess.run(["/qemu-restart-a-vm.sh", str(vm.id)])
         self.init_vm(vm.id)
