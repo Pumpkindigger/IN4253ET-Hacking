@@ -30,7 +30,7 @@ class Manager:
         logging.info(f"Refreshing the {vm.get_architecture()} architecture QEMU instance because it's old and unused.")
         vm.close_telnet_connection()
         self.vm_list.remove(vm)
-        subprocess.run(["/qemu-restart-a-vm.sh", str(vm.id)])
+        subprocess.run(["/qemu-restart-a-vm.sh", str(vm.id)], capture_output=True)
         self.init_vm(vm.id)
 
     def start_thread(self):
