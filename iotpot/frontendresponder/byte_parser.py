@@ -98,15 +98,16 @@ class ByteParser:
                         else:
                             logging.info(f"FROM {ip} IAC {ByteParser.telnet_commands[byte_command]} UNKNOWN OPTION: {ByteParser.telnet_command_options[byte_option]}")
                     else:
-                        logging.info(f"FROM {ip} IAC {ByteParser.telnet_commands[byte_command]}")
-
                         command_array = [byte_command]
                         if byte_command == 250:  # Subnegotiation of the indicated option follows.
+                            logging.info(f"FROM {ip} IAC {ByteParser.telnet_commands[byte_command]} {ByteParser.telnet_command_options[buffer[i + 1]]}")
                             i += 1
                             while not (buffer[i] == 255 and buffer[i + 1] == 240):
                                 command_array.append(buffer[i])
                                 i += 1
                             i -= 1  # Go one back to allow parsing of IAC SE.
+                        else:
+                            logging.info(f"FROM {ip} IAC {ByteParser.telnet_commands[byte_command]}")
                         commands.append(command_array)
                 else:
                     logging.warning(f"FROM {ip} INVALID IAC.")

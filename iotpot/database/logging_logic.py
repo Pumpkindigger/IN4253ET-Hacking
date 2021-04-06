@@ -15,13 +15,14 @@ class LoggingLogic:
     def __init__(self, dbcon):
         self.dbcon = dbcon
 
-    def insert_log(self, profile_id, client_ip, history_buffer):
+    def insert_log(self, profile_id, client_ip, history_buffer, architecture):
         """
         Insert a new logging entry.
         """
         log_entry = {
             "timestamp": int(time.time()),
             "profile_id": str(profile_id),
+            "architecture": architecture,
             "client_ip": client_ip,
             "history_buffer": history_buffer.hex()
         }

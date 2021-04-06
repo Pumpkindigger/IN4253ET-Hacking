@@ -5,11 +5,13 @@ import logging
 import os
 import time
 import sys
+import random
 
 from frontendresponder.telnet_thread import TelnetThread
 from database.logging_logic import LoggingLogic
 from database.profile_logic import ProfileLogic
 from database.database_connection import DatabaseConnection
+from manager.manager import Manager
 
 
 def init_logging():
@@ -40,22 +42,24 @@ def init_socket():
 
 
 def init_database_conn():
-    return ProfileLogic(DatabaseConnection("myFirstDatabase", "profiles")),\
-           LoggingLogic(DatabaseConnection("myFirstDatabase", "logging"))
+    return ProfileLogic(DatabaseConnection("profileDB", "profiles")),\
+           LoggingLogic(DatabaseConnection("profileDB", "logging"))
 
 
 def handle_incoming_connections(listener):
     """Endless loop to automatically accept the connection and create a TelnetThread."""
-    global database_profile, database_logging
+    global database_profile, database_logging, vm_manager
     try:
         while True:
             client, address = listener.accept()
-            TelnetThread(client, database_profile, database_logging).start()
+            vm = random.choice(vm_manager.vm_list)
+            TelnetThread(client, database_profile, database_logging, vm).start()
     except KeyboardInterrupt:
         logging.info("Closing FrontEndResponder...")
         listener.shutdown(1)
         listener.close()
         database_profile.dbcon.client.close()
+        vm_manager.thread.cancel()
 
         # Make sure to cleanly exit the running Telnet connections.
         for thread in threading.enumerate():
@@ -69,4 +73,5 @@ def handle_incoming_connections(listener):
 
 init_logging()
 database_profile, database_logging = init_database_conn()
+vm_manager = Manager()
 handle_incoming_connections(init_socket())

@@ -6,6 +6,7 @@ import logging
 from frontendresponder.byte_parser import ByteParser
 from database.logging_logic import LoggingLogic
 from database.profile_logic import ProfileLogic
+from manager.vm import VM
 
 
 # Options: https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.2.0/com.ibm.zos.v2r2.hald001/telcmds.htm
@@ -18,7 +19,7 @@ from database.profile_logic import ProfileLogic
 class TelnetThread(threading.Thread):
     """Defines a Thread that includes variables and functions needed for Telnet Functionality."""
 
-    def __init__(self, client: socket, database_profile: ProfileLogic, database_logging: LoggingLogic):
+    def __init__(self, client: socket, database_profile: ProfileLogic, database_logging: LoggingLogic, vm_connection: VM):
         """Extend the Thread class with variables to keep track of the client/socket connection
         if it should close, and what data has been received so far."""
         threading.Thread.__init__(self)
@@ -33,21 +34,25 @@ class TelnetThread(threading.Thread):
         self.logged_in = False
         self.login_username = None
         self.login_counter = 0
+        self.vm_connection = vm_connection
 
     def run(self):
         """When the thread is started it will output some logging information and start the telnet_thread."""
         logging.info(f"Incoming connection received from: {self.client_ip}.")
+        logging.info(f"For {self.client_ip}: Using {self.vm_connection.get_architecture()} architecture.")
+        self.vm_connection.start_session()
         self.set_random_profile()
         self.telnet_thread()
 
         logging.info(f"Connection closed from: {self.client_ip}")
-        logging_id = self.database_logging.insert_log(self.profile.get("_id"), self.client_ip, self.history)
+        logging_id = self.database_logging.insert_log(self.profile.get("_id"), self.client_ip, self.history, self.vm_connection.get_architecture())
         logging.info(f"Session from {self.client_ip} is logged to MongoDB with id: {logging_id}")
+        self.vm_connection.current_users -= 1
 
     def set_random_profile(self):
         self.profile = self.database_profile.get_random_profile()
         profile_id = self.profile.get("_id")
-        logging.info(f"Requesting random profile from database. Got: {profile_id}")
+        logging.info(f"For {self.client_ip}: Requesting random profile from database. Got: {profile_id}")
 
     def login(self, login_text):
         if self.login_username is None:
@@ -98,8 +103,10 @@ class TelnetThread(threading.Thread):
                 commands, text = ByteParser.parse_buffer(buffer, self.client_ip)
                 self.process_commands(commands)
 
-                if not self.logged_in and len(text) > 0:
+                if len(text) > 0 and not self.logged_in:
                     self.login(text)
+                elif self.logged_in:
+                    self.send_to_client(self.vm_connection.run_command(text))
 
                 # DEBUG
                 # print(self.history)

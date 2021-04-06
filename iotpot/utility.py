@@ -19,7 +19,7 @@ example_json = {
 
 # Update command
 # DatabaseConnection.delete_profile({"Welcome":"BCM96318 Broadband Router"})
-dbcon = DatabaseConnection("myFirstDatabase","profiles")
+dbcon = DatabaseConnection("profileDB","profiles")
 y = dbcon.get_random_entry()
 print(y)
 
