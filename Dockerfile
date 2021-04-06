@@ -17,6 +17,8 @@ RUN wget -P /qemu_images https://downloads.openwrt.org/releases/19.07.7/targets/
 # Add qemu startup script
 COPY qemu-setup.sh /qemu-setup.sh
 RUN chmod +x /qemu-setup.sh
+COPY qemu-restart-a-vm.sh /qemu-restart-a-vm.sh
+RUN chmod +x /qemu-restart-a-vm.sh
 
 # Add iotpot to docker instance
 RUN mkdir /iotpot

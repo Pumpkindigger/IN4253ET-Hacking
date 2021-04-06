@@ -41,3 +41,6 @@ class VM:
         response = self.telnet_connection.read_very_eager()
         response = response[len(command)+2:]  # remove the first line because it echoes the command
         return response
+
+    def close_telnet_connection(self):
+        self.telnet_connection.close()
