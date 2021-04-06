@@ -43,5 +43,5 @@ class Manager:
         self.thread = self.start_thread()
         current_time = int(time.time())
         for vm in self.vm_list:
-            if vm.current_users == 0 and current_time - vm.start_time > 50:
+            if vm.current_users == 0 and current_time - vm.start_time > 900:
                 self.restart_vm(vm)
