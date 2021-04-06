@@ -1,11 +1,5 @@
 #!/bin/bash
 
-# Create bridge
-brctl addbr br0
-
-# Make sure everything is up
-ip link set dev br0 up
-
 # Start X86 QEMU instance
 cp /qemu_images/openwrt-19.07.7-x86-64-combined-ext4.img /qemu_images/openwrt-19.07.7-x86-64-combined-ext4_copy.img
 qemu-system-x86_64 -drive format=raw,file=/qemu_images/openwrt-19.07.7-x86-64-combined-ext4_copy.img -daemonize -serial telnet:localhost:4321,server,nowait;
