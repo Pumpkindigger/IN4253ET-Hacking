@@ -14,10 +14,6 @@ RUN wget -P /qemu_images https://downloads.openwrt.org/releases/19.07.7/targets/
 # Download arm image
 RUN wget -P /qemu_images https://downloads.openwrt.org/releases/19.07.7/targets/armvirt/64/openwrt-19.07.7-armvirt-64-Image-initramfs
 
-# Make bridge.conf file to allow bridge utilities for QEMU
-RUN mkdir /etc/qemu
-RUN echo "allow br0" >> /etc/qemu/bridge.conf
-
 # Add qemu startup script
 COPY qemu-setup.sh /qemu-setup.sh
 RUN chmod +x /qemu-setup.sh
