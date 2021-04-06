@@ -61,6 +61,7 @@ class TelnetThread(threading.Thread):
             self.send_to_client(str.encode("Password: "))  # TODO implement disabling echo so password won't be seen.
         else:
             #self.send_to_client(b'\xff\xfe\x01')
+            logging.info(f"For {self.client_ip}: Tried to login with {self.login_username}:{login_text}")
             authentication_type = self.profile.get("Authentication")
             if type(authentication_type) is str and authentication_type == "Always":  # Always accept
                 self.send_to_client(str.encode("Welcome! \n"))
@@ -85,7 +86,6 @@ class TelnetThread(threading.Thread):
                 self.login_username = None
                 self.send_to_client(str.encode("Invalid login...\nLogin: "))
 
-
     def telnet_thread(self):
         """Handling of incoming/outgoing bytes."""
         while self.alive:
@@ -103,17 +103,12 @@ class TelnetThread(threading.Thread):
                 commands, text = ByteParser.parse_buffer(buffer, self.client_ip)
                 self.process_commands(commands)
 
-                if len(text) > 0 and not self.logged_in:
-                    self.login(text)
-                elif self.logged_in:
-                    self.send_to_client(self.vm_connection.run_command(text))
-
-                # DEBUG
-                # print(self.history)
-                print(commands)
-                print(text)
-                # DEBUG
-
+                if self.alive:  # Extra check because it could be that the user has just sent a close connection command.
+                    if len(text) > 0 and not self.logged_in:
+                        self.login(text)
+                    elif self.logged_in:
+                        logging.info(f"For {self.client_ip}: Run command \"{text}\"")
+                        self.send_to_client(self.vm_connection.run_command(text))
             if not self.welcome_send:
                 self.send_to_client(str.encode(bytes(self.profile.get("Welcome"), "utf-8").decode("unicode_escape")))
                 self.welcome_send = True
