@@ -15,7 +15,7 @@ Wouter Zonneveld - 4582861 - w.r.zonneveld@student.tudelft.nl
 ## Repository Structure
 `./iotpot/` folder contains the Python code for our IoT Honeypot.  
 `./database/` folder contains Python scripts that we used to populate our MongoDB database with banners.  
-`./qemu/ folder contains bash scripts that are related to qemu managing.  
+`./qemu/` folder contains bash scripts that are related to qemu managing.  
 `Dockerfile` is used to build and run the IoTHoneypot.
 
 ### IoTHoneypot Setup
