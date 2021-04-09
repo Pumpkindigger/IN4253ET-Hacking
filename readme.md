@@ -9,7 +9,25 @@ Peter Elgar - 5396328 - p.w.j.elgar@student.tudelft.nl
 Suzanne Maquelin - 5402840 - s.l.maquelin@student.tudelft.nl  
 Wouter Zonneveld - 4582861 - w.r.zonneveld@student.tudelft.nl  
 
-## Preparations
+## Requirements
+- Docker>=19
+
+## Repository Structure
+`./iotpot/` folder contains the Python code for our IoT Honeypot.  
+`./database/` folder contains Python scripts that we used to populate our MongoDB database with banners.  
+`./qemu/ folder contains bash scripts that are related to qemu managing.  
+`Dockerfile` is used to build and run the IoTHoneypot.
+
+### IoTHoneypot Setup
+On your host-pc:
+- For building: ```docker build -t iotbox .```  
+- For running: ```docker run -it iotbox```  
+
+In the IoTHoneypot Docker Instance:
+- To boot up the qemu instances, run ```./qemu/qemu-setup.sh```.  
+- To run our IoTHoneypot server, move to `/iotpot/`  and run `python3 main.py`.
+
+## Preparations for Development workspace
 Requirements:
 - Python3.8
 - Python3 pip
@@ -22,26 +40,3 @@ source env/bin/activate
 python3 -m pip install -r requirements.txt
 ```
 
-## Folder Structure
-`./database/` folder contains scripts that we used to populate our MongoDB database with banners.  
-`./iotpot/` folder contains the code for our IoT Honeypot.  
-`qemu-setup.sh` is used to start the qemu instances within docker.  
-`Dockerfile` is used to build and configure the docker instance.
-
-### Shodan
-Username: 2GgLivbNtbRqE5Sr\
-Password: TLuekis2Qx9UVWEp
-
-### IoTBOX Setup
-First, ensure you have a working docker v19> installation. Resources we used:
-- docker.com
-- https://www.digitalocean.com/community/questions/how-to-fix-docker-got-permission-denied-while-trying-to-connect-to-the-docker-daemon-socket
-
-Then, run the following commands:  
-For building this image (once): ```docker build -t iotbox .```  
-For running an instance: ```docker run -it iotbox```  
-
-To set up the qemu instances, run ```./qemu-setup.sh``` in the docker container.  
-To run our IoT Honey pot, move to `/iotpot/`  and run `python3 main.py`.
-
-[comment]: <> (TODO add a description for setting up tuntap on Mac)

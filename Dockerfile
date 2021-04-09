@@ -15,10 +15,8 @@ RUN wget -P /qemu_images https://downloads.openwrt.org/releases/19.07.7/targets/
 RUN wget -P /qemu_images https://downloads.openwrt.org/releases/19.07.7/targets/armvirt/64/openwrt-19.07.7-armvirt-64-Image-initramfs
 
 # Add qemu startup script
-COPY qemu-setup.sh /qemu-setup.sh
-RUN chmod +x /qemu-setup.sh
-COPY qemu-restart-a-vm.sh /qemu-restart-a-vm.sh
-RUN chmod +x /qemu-restart-a-vm.sh
+COPY ./qemu/ /qemu/
+RUN chmod +x -R /qemu/
 
 # Add iotpot to docker instance
 RUN mkdir /iotpot
